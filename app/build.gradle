@@ -16,7 +16,20 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+
+        def baseUrl = { path -> "\"http://dummy.restapiexample.com/api/v1/$path\"" }
+
+        debug {
+
+            buildConfigField "String", "BASE_URL", baseUrl("")
+
+            debuggable true
+        }
+
         release {
+
+            buildConfigField "String", "BASE_URL", baseUrl("")
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -32,4 +45,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
 }
