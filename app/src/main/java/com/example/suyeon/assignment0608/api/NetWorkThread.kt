@@ -3,10 +3,13 @@ package com.example.suyeon.assignment0608.api
 import android.os.AsyncTask
 import android.util.Log
 import com.example.suyeon.assignment0608.BuildConfig
-import java.io.*
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.BufferedWriter
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
-import java.net.URLEncoder
 
 
 /**
@@ -16,14 +19,26 @@ import java.net.URLEncoder
  *
  * Description :
  */
+
+enum class HttpMethod {
+    GET, POST, PUT
+}
+
 open class NetWorkThread(
-    private val requestType: String,
-    private val url: String,
+    private val requestType: HttpMethod,
+    private val endUrl: String,
     private val params: Map<String, String>?,
     private val networkFinishListener: NetworkFinishListener
 ) : AsyncTask<Void, Void, String?>() {
 
     val TAG = "NetWorkThread"
+
+    companion object {
+        const val MAIN_URL = "users"
+        const val DETAIL_URL = "users"
+        const val CREATE_URL = "users"
+        const val UPDATE_URL = "update"
+    }
 
     interface NetworkFinishListener {
         fun onFinished(result: String)
@@ -43,31 +58,42 @@ open class NetWorkThread(
 
     private fun send(): String? {
 
-        var response: String? = null
+        var response: String?
 
         try {
 
-            val url = URL(BuildConfig.BASE_URL + url)
+            var url = BuildConfig.BASE_URL + endUrl
 
-            Log.d(TAG, url.toString())
+            if (HttpMethod.GET == requestType) {
+                params?.let {
+                    url += getParams(params)
+                }
+            }
 
-            val httpConnection: HttpURLConnection = url.openConnection() as HttpURLConnection
+            //Log.d(TAG, url)
 
-            httpConnection.requestMethod = requestType
+            val httpConnection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
+
+            httpConnection.requestMethod = requestType.toString()
             httpConnection.connectTimeout = 3000
+            httpConnection.addRequestProperty("Content-Type", "application/json")
 
+            Log.d(TAG, "httpConnection.url = " + httpConnection.url)
+            Log.d(TAG, "httpConnection.requestMethod = " + httpConnection.requestMethod)
 
-            if (!params.isNullOrEmpty()) {
+            if (HttpMethod.POST == requestType) {
+
                 val os = httpConnection.outputStream // 서버로 보내기 위한 출력 스트림
                 val bw = BufferedWriter(OutputStreamWriter(os, "UTF-8")) // UTF-8로 전송
-                val data = getPostString(params)
-                if (data != null) {
-                    bw.write(data) // 매개변수 전송
-                }
+                val data = getPostJson(params)
+                Log.d(TAG, "data = " + data.toString())
+                bw.write(data.toString()) // 매개변수 전송
                 bw.flush()
                 bw.close()
                 os.close()
             }
+
+            Log.d(TAG, "httpConnection.responseCode = " + httpConnection.responseCode)
 
             if (httpConnection.responseCode == HttpURLConnection.HTTP_OK) {
 
@@ -81,10 +107,19 @@ open class NetWorkThread(
                 }
 
                 response = readData
+            } else {
+
+                Log.d(TAG, "error = " + httpConnection.errorStream.toString())
+
+                response = httpConnection.responseCode.toString().plus(" ")
+                    .plus(httpConnection.responseMessage)
             }
 
+            httpConnection.disconnect()
 
         } catch (e: Exception) {
+
+            Log.d(TAG, "Exception")
 
             response = e.toString()
         }
@@ -93,34 +128,29 @@ open class NetWorkThread(
 
     }
 
-    private fun getPostString(params: Map<String, String>?): String? {
+    private fun getParams(params: Map<String, String>?): String {
 
-        val result = StringBuilder()
+        return if (params != null) {
+            val sb = StringBuffer()
+            for (key in params) {
+                sb.append("/")
+                sb.append(key.value)
+            }
+            sb.toString()
+        } else {
+            ""
+        }
+    }
 
-        if (!params.isNullOrEmpty()) {
-            var first = true // 첫 번째 매개변수 여부
+    private fun getPostJson(params: Map<String, String>?): JSONObject {
 
-            for (entry in params.entries) {
-                if (first)
-                    first = false
-                else
-                // 첫 번째 매개변수가 아닌 경우엔 앞에 &를 붙임
-                    result.append("&")
-
-                try { // UTF-8로 주소에 키와 값을 붙임
-                    result.append(URLEncoder.encode(entry.key, "UTF-8"))
-                    result.append("=")
-                    result.append(URLEncoder.encode(entry.value, "UTF-8"))
-                } catch (ue: UnsupportedEncodingException) {
-                    ue.printStackTrace()
-                } catch (e: Exception) {
-                    e.printStackTrace()
+        return JSONObject().apply {
+            if (!params.isNullOrEmpty()) {
+                for (entry in params.entries) {
+                    put(entry.key, entry.value)
                 }
-
             }
         }
-
-        return result.toString()
     }
 
 }

@@ -28,9 +28,10 @@ class MainAdapter(
         val item = list[position]
 
         holder.id.text = item.id
-        holder.name.text = item.employee_name
-        holder.salary.text = item.employee_salary
-        holder.age.text = item.employee_age
+        holder.email.text = item.email
+        holder.firstName.text = item.firstName
+        holder.lastName.text = item.lastName
+        holder.avatar.text = item.avatar
 
         if (!holder.itemView.hasOnClickListeners()) {
 
@@ -51,10 +52,11 @@ class MainAdapter(
 
     class ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val id: TextView = itemView.findViewById(R.id.id)
-        val name: TextView = itemView.findViewById(R.id.name)
-        val salary: TextView = itemView.findViewById(R.id.salary)
-        val age: TextView = itemView.findViewById(R.id.age)
+        val id: TextView = itemView.findViewById(R.id.person_id)
+        val email: TextView = itemView.findViewById(R.id.email)
+        val firstName: TextView = itemView.findViewById(R.id.first_name)
+        val lastName: TextView = itemView.findViewById(R.id.last_name)
+        val avatar: TextView = itemView.findViewById(R.id.avatar)
 
         companion object {
 

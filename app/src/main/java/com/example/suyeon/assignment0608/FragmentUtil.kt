@@ -17,7 +17,6 @@ fun setFragment(id: Int, newFragment: Fragment, fragmentManager: FragmentManager
     val transaction = if (fragmentManager.findFragmentById(id) == null) {
         fragmentManager.beginTransaction().apply {
             add(id, newFragment)
-            addToBackStack(null)
         }
     } else {
         fragmentManager.beginTransaction().apply {

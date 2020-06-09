@@ -12,31 +12,38 @@
         android:textStyle="bold" />
 
     <TextView
-        android:id="@+id/id"
+        android:id="@+id/person_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         tools:text="아이디" />
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        tools:text="사람이름" />
+        tools:text="이메일" />
 
     <TextView
-        android:id="@+id/salary"
+        android:id="@+id/first_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        tools:text="봉급" />
+        tools:text="성" />
 
     <TextView
-        android:id="@+id/age"
+        android:id="@+id/last_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        tools:text="나이" />
+        tools:text="이름" />
+
+    <TextView
+        android:id="@+id/avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        tools:text="아바타" />
 
 </LinearLayout>
