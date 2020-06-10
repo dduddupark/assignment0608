@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.api.HttpMethod
 import com.example.suyeon.assignment0608.api.NetWorkThread
-import com.example.suyeon.assignment0608.api.NetWorkThread.Companion.CREATE_URL
 import kotlinx.android.synthetic.main.frag_add.*
 
 
@@ -43,7 +42,7 @@ class AddFragment : Fragment() {
 
     private fun create() {
 
-        NetWorkThread(HttpMethod.POST, CREATE_URL, mapOf(
+        NetWorkThread(HttpMethod.POST, null, mapOf(
             "name" to et_name.text.toString(),
             "job" to et_job.text.toString()
         ), object : NetWorkThread.NetworkFinishListener {

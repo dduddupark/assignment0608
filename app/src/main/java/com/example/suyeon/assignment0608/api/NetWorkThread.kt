@@ -10,6 +10,7 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 
 /**
@@ -21,24 +22,17 @@ import java.net.URL
  */
 
 enum class HttpMethod {
-    GET, POST, PUT
+    GET, POST, PUT, DELETE
 }
 
 open class NetWorkThread(
     private val requestType: HttpMethod,
-    private val endUrl: String,
-    private val params: Map<String, String>?,
+    private val urlParams: Map<String, String>? = null,
+    private val bodyParams: Map<String, String>? = null,
     private val networkFinishListener: NetworkFinishListener
 ) : AsyncTask<Void, Void, String?>() {
 
     val TAG = "NetWorkThread"
-
-    companion object {
-        const val MAIN_URL = "users"
-        const val DETAIL_URL = "users"
-        const val CREATE_URL = "users"
-        const val UPDATE_URL = "update"
-    }
 
     interface NetworkFinishListener {
         fun onFinished(result: String)
@@ -62,30 +56,31 @@ open class NetWorkThread(
 
         try {
 
-            var url = BuildConfig.BASE_URL + endUrl
+            var url = BuildConfig.BASE_URL
 
-            if (HttpMethod.GET == requestType) {
-                params?.let {
-                    url += getParams(params)
+            if (HttpMethod.GET == requestType || HttpMethod.PUT == requestType || HttpMethod.DELETE == requestType) {
+                urlParams?.let {
+                    url += getParams(urlParams)
                 }
             }
 
             //Log.d(TAG, url)
 
-            val httpConnection: HttpURLConnection = URL(url).openConnection() as HttpURLConnection
+            val httpsConnection: HttpsURLConnection =
+                URL(url).openConnection() as HttpsURLConnection
 
-            httpConnection.requestMethod = requestType.toString()
-            httpConnection.connectTimeout = 3000
-            httpConnection.addRequestProperty("Content-Type", "application/json")
+            httpsConnection.requestMethod = requestType.toString()
+            httpsConnection.connectTimeout = 3000
+            httpsConnection.addRequestProperty("Content-Type", "application/json")
 
-            Log.d(TAG, "httpConnection.url = " + httpConnection.url)
-            Log.d(TAG, "httpConnection.requestMethod = " + httpConnection.requestMethod)
+            Log.d(TAG, "httpConnection.url = " + httpsConnection.url)
+            Log.d(TAG, "httpConnection.requestMethod = " + httpsConnection.requestMethod)
 
-            if (HttpMethod.POST == requestType) {
+            if (HttpMethod.POST == requestType || HttpMethod.PUT == requestType) {
 
-                val os = httpConnection.outputStream // 서버로 보내기 위한 출력 스트림
+                val os = httpsConnection.outputStream // 서버로 보내기 위한 출력 스트림
                 val bw = BufferedWriter(OutputStreamWriter(os, "UTF-8")) // UTF-8로 전송
-                val data = getPostJson(params)
+                val data = getPostJson(bodyParams)
                 Log.d(TAG, "data = " + data.toString())
                 bw.write(data.toString()) // 매개변수 전송
                 bw.flush()
@@ -93,13 +88,16 @@ open class NetWorkThread(
                 os.close()
             }
 
-            Log.d(TAG, "httpConnection.responseCode = " + httpConnection.responseCode)
+            Log.d(TAG, "httpConnection.responseCode = " + httpsConnection.responseCode)
 
-            if (httpConnection.responseCode == HttpURLConnection.HTTP_OK) {
+            if (httpsConnection.responseCode == HttpURLConnection.HTTP_OK ||
+                httpsConnection.responseCode == HttpURLConnection.HTTP_CREATED ||
+                httpsConnection.responseCode == HttpURLConnection.HTTP_NO_CONTENT
+            ) {
 
                 var readData = ""
                 val reader =
-                    BufferedReader(InputStreamReader(httpConnection.inputStream)) // 서버의 응답을 읽기 위한 입력 스트림
+                    BufferedReader(InputStreamReader(httpsConnection.inputStream)) // 서버의 응답을 읽기 위한 입력 스트림
 
                 while (true) {
                     val line = reader.readLine() ?: break
@@ -107,15 +105,17 @@ open class NetWorkThread(
                 }
 
                 response = readData
+
+
             } else {
 
-                Log.d(TAG, "error = " + httpConnection.errorStream.toString())
+                Log.d(TAG, "error = " + httpsConnection.errorStream.toString())
 
-                response = httpConnection.responseCode.toString().plus(" ")
-                    .plus(httpConnection.responseMessage)
+                response = httpsConnection.responseCode.toString().plus(" ")
+                    .plus(httpsConnection.responseMessage)
             }
 
-            httpConnection.disconnect()
+            httpsConnection.disconnect()
 
         } catch (e: Exception) {
 

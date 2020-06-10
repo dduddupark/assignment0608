@@ -21,5 +21,5 @@ object PARAM {
     const val EMAIL = "email"
     const val FIRST_NAME = "first_name"
     const val LAST_NAME = "last_name"
-    const val AVARTAR = "avatar"
+    const val AVATAR = "avatar"
 }

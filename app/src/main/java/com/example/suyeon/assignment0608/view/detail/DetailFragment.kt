@@ -5,15 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.api.HttpMethod
 import com.example.suyeon.assignment0608.api.NetWorkThread
-import com.example.suyeon.assignment0608.api.NetWorkThread.Companion.DETAIL_URL
 import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.data.PARAM
 import kotlinx.android.synthetic.main.frag_detail.*
-
 import org.json.JSONObject
 
 
@@ -52,6 +51,10 @@ class DetailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        edit.setOnClickListener {
+            editData()
+        }
+
         arguments?.getString(PARAM.ID)?.let {
             getData(it)
         }
@@ -59,7 +62,7 @@ class DetailFragment : Fragment() {
 
     private fun getData(param: String) {
         NetWorkThread(
-            HttpMethod.GET, DETAIL_URL, mapOf(PARAM.ID to param),
+            HttpMethod.GET, mapOf(PARAM.ID to param), null,
             object : NetWorkThread.NetworkFinishListener {
                 override fun onFinished(result: String) {
                     Log.d(TAG, "result = " + result)
@@ -72,7 +75,7 @@ class DetailFragment : Fragment() {
                             data.getString(PARAM.EMAIL),
                             data.getString(PARAM.FIRST_NAME),
                             data.getString(PARAM.LAST_NAME),
-                            data.getString(PARAM.AVARTAR)
+                            data.getString(PARAM.AVATAR)
                         )
                     )
                 }
@@ -80,11 +83,30 @@ class DetailFragment : Fragment() {
         ).execute()
     }
 
+    private fun editData() {
+        NetWorkThread(
+            HttpMethod.PUT,
+            mapOf("id" to person_id.text.toString()),
+            mapOf("name" to name.text.toString()),
+            object : NetWorkThread.NetworkFinishListener {
+                override fun onFinished(result: String) {
+
+                    Log.d(TAG, "result = " + result)
+
+                    val newName = JSONObject(result).getString("name")
+                    name.setText(newName)
+
+                    Toast.makeText(context, result, Toast.LENGTH_LONG).show()
+                }
+            }
+
+        ).execute()
+    }
+
     private fun setText(employee: Employee) {
         person_id.text = employee.id
         email.text = employee.email
-        first_name.text = employee.firstName
-        last_name.text = employee.lastName
+        name.setText(employee.firstName.plus(" ").plus(employee.lastName))
         avatar.text = employee.avatar
     }
 }

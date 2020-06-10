@@ -18,19 +18,23 @@ import com.example.suyeon.assignment0608.data.Employee
  * Description :
  */
 class MainAdapter(
-    private val list: List<Employee>,
+    private var list: List<Employee>,
     private val itemClickListener: ItemClickListener
 ) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
     private val TAG = "MainAdapter"
+
+    fun setData(list: List<Employee>) {
+        this.list = list
+        notifyDataSetChanged()
+    }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
 
         holder.id.text = item.id
         holder.email.text = item.email
-        holder.firstName.text = item.firstName
-        holder.lastName.text = item.lastName
+        holder.name.text = item.firstName.plus(" ").plus(item.lastName)
         holder.avatar.text = item.avatar
 
         if (!holder.itemView.hasOnClickListeners()) {
@@ -39,6 +43,10 @@ class MainAdapter(
                 TAG,
                 "holder.itemView.hasOnClickListeners() = " + holder.itemView.hasOnClickListeners() + " / id = " + item.id
             )
+
+            holder.delete.setOnClickListener {
+                itemClickListener.onDelete(item)
+            }
 
             holder.itemView.setOnClickListener {
                 itemClickListener.onClick(item)
@@ -54,9 +62,9 @@ class MainAdapter(
 
         val id: TextView = itemView.findViewById(R.id.person_id)
         val email: TextView = itemView.findViewById(R.id.email)
-        val firstName: TextView = itemView.findViewById(R.id.first_name)
-        val lastName: TextView = itemView.findViewById(R.id.last_name)
+        val name: TextView = itemView.findViewById(R.id.name)
         val avatar: TextView = itemView.findViewById(R.id.avatar)
+        val delete: TextView = itemView.findViewById(R.id.btn_delete)
 
         companion object {
 
@@ -76,4 +84,5 @@ class MainAdapter(
 
 interface ItemClickListener {
     fun onClick(employee: Employee)
+    fun onDelete(employee: Employee)
 }

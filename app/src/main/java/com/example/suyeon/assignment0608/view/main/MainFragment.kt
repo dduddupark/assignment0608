@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.api.HttpMethod
@@ -30,6 +31,8 @@ class MainFragment : Fragment() {
     private val TAG = "MainFragment"
 
     lateinit var thread: NetWorkThread
+
+    lateinit var adapter: MainAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,17 +60,13 @@ class MainFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-
-
-
         thread.cancel(true)
-
     }
 
     private fun getData() {
 
         thread = NetWorkThread(
-            HttpMethod.GET, NetWorkThread.MAIN_URL, null,
+            HttpMethod.GET, null, null,
             object : NetWorkThread.NetworkFinishListener {
                 override fun onFinished(result: String) {
                     Log.d(TAG, "result = " + result)
@@ -86,7 +85,7 @@ class MainFragment : Fragment() {
                                     tempJson.getString(PARAM.EMAIL),
                                     tempJson.getString(PARAM.FIRST_NAME),
                                     tempJson.getString(PARAM.LAST_NAME),
-                                    tempJson.getString(PARAM.AVARTAR)
+                                    tempJson.getString(PARAM.AVATAR)
                                 )
                             )
                         }
@@ -95,9 +94,6 @@ class MainFragment : Fragment() {
 
                         if (list.isNotEmpty()) {
                             Log.d(TAG, "isNotEmpty")
-
-
-
                             setAdapter(list)
                         }
                     }
@@ -107,17 +103,44 @@ class MainFragment : Fragment() {
         thread.execute()
     }
 
-    private fun setAdapter(list: ArrayList<Employee>) {
-        rv_employee.adapter = MainAdapter(list,
-            object :
-                ItemClickListener {
-                override fun onClick(employee: Employee) {
-                    setFragment(
-                        R.id.fragment_container,
-                        DetailFragment.newInstance(employee.id),
-                        fragmentManager!!
-                    )
+    private fun deleteData(employee: Employee) {
+        thread = NetWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null,
+            object : NetWorkThread.NetworkFinishListener {
+                override fun onFinished(result: String) {
+                    Log.d(TAG, "result = " + result)
+                    Toast.makeText(context, "삭제성공", Toast.LENGTH_LONG).show()
+                    getData()
                 }
-            })
+            }
+        )
+
+        thread.execute()
+    }
+
+    private fun setAdapter(list: ArrayList<Employee>) {
+
+        if (rv_employee.adapter == null) {
+
+            adapter = MainAdapter(list,
+                object :
+                    ItemClickListener {
+                    override fun onClick(employee: Employee) {
+                        setFragment(
+                            R.id.fragment_container,
+                            DetailFragment.newInstance(employee.id),
+                            fragmentManager!!
+                        )
+                    }
+
+                    override fun onDelete(employee: Employee) {
+                        deleteData(employee)
+                    }
+                })
+
+            rv_employee.adapter = adapter
+        } else {
+            adapter.setData(list)
+            Toast.makeText(context, "데이터를 다시 불러왔습니다.", Toast.LENGTH_LONG).show()
+        }
     }
 }

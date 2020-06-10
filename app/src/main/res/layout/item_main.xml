@@ -19,14 +19,7 @@
         tools:text="이메일" />
 
     <TextView
-        android:id="@+id/first_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        tools:text="성" />
-
-    <TextView
-        android:id="@+id/last_name"
+        android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -38,6 +31,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         tools:text="아바타" />
+
+    <Button
+        android:id="@+id/btn_delete"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="삭제"/>
 
     <View
         android:layout_width="match_parent"

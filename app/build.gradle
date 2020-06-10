@@ -17,7 +17,7 @@ android {
     }
     buildTypes {
 
-        def baseUrl = { path -> "\"http://dummy.restapiexample.com/api/v1/$path\"" }
+        def baseUrl = { path -> "\"https://reqres.in/api/users$path\"" }
 
         debug {
 
