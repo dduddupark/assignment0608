@@ -5,11 +5,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.api.HttpMethod
 import com.example.suyeon.assignment0608.api.NetWorkThread
+import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_add.*
 
 
@@ -24,6 +24,8 @@ class AddFragment : Fragment() {
 
     private val TAG = "AddFragment"
 
+    private lateinit var thread: NetWorkThread
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -36,22 +38,28 @@ class AddFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         btn_create.setOnClickListener {
-            create()
+            createData()
         }
     }
 
-    private fun create() {
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause")
+        thread.cancel(true)
+    }
 
-        NetWorkThread(HttpMethod.POST, null, mapOf(
+    private fun createData() {
+        thread = NetWorkThread(HttpMethod.POST, null, mapOf(
             "name" to et_name.text.toString(),
             "job" to et_job.text.toString()
         ), object : NetWorkThread.NetworkFinishListener {
             override fun onFinished(result: String) {
                 Log.d(TAG, "result = " + result)
-                Toast.makeText(context, result, Toast.LENGTH_LONG).show()
+                context!!.show(result)
             }
         }
-        ).execute()
+        )
+        thread.execute()
     }
 
 }

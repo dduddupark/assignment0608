@@ -32,7 +32,9 @@ open class NetWorkThread(
     private val networkFinishListener: NetworkFinishListener
 ) : AsyncTask<Void, Void, String?>() {
 
-    val TAG = "NetWorkThread"
+    private val TIME_OUT = 3000
+
+    private val TAG = "NetWorkThread"
 
     interface NetworkFinishListener {
         fun onFinished(result: String)
@@ -55,7 +57,6 @@ open class NetWorkThread(
         var response: String?
 
         try {
-
             var url = BuildConfig.BASE_URL
 
             if (HttpMethod.GET == requestType || HttpMethod.PUT == requestType || HttpMethod.DELETE == requestType) {
@@ -64,20 +65,16 @@ open class NetWorkThread(
                 }
             }
 
-            //Log.d(TAG, url)
-
-            val httpsConnection: HttpsURLConnection =
-                URL(url).openConnection() as HttpsURLConnection
+            val httpsConnection = URL(url).openConnection() as HttpsURLConnection
 
             httpsConnection.requestMethod = requestType.toString()
-            httpsConnection.connectTimeout = 3000
+            httpsConnection.connectTimeout = TIME_OUT
             httpsConnection.addRequestProperty("Content-Type", "application/json")
 
             Log.d(TAG, "httpConnection.url = " + httpsConnection.url)
             Log.d(TAG, "httpConnection.requestMethod = " + httpsConnection.requestMethod)
 
             if (HttpMethod.POST == requestType || HttpMethod.PUT == requestType) {
-
                 val os = httpsConnection.outputStream // 서버로 보내기 위한 출력 스트림
                 val bw = BufferedWriter(OutputStreamWriter(os, "UTF-8")) // UTF-8로 전송
                 val data = getPostJson(bodyParams)
@@ -94,7 +91,6 @@ open class NetWorkThread(
                 httpsConnection.responseCode == HttpURLConnection.HTTP_CREATED ||
                 httpsConnection.responseCode == HttpURLConnection.HTTP_NO_CONTENT
             ) {
-
                 var readData = ""
                 val reader =
                     BufferedReader(InputStreamReader(httpsConnection.inputStream)) // 서버의 응답을 읽기 위한 입력 스트림
@@ -106,9 +102,7 @@ open class NetWorkThread(
 
                 response = readData
 
-
             } else {
-
                 Log.d(TAG, "error = " + httpsConnection.errorStream.toString())
 
                 response = httpsConnection.responseCode.toString().plus(" ")
@@ -125,11 +119,9 @@ open class NetWorkThread(
         }
 
         return response
-
     }
 
     private fun getParams(params: Map<String, String>?): String {
-
         return if (params != null) {
             val sb = StringBuffer()
             for (key in params) {
@@ -143,7 +135,6 @@ open class NetWorkThread(
     }
 
     private fun getPostJson(params: Map<String, String>?): JSONObject {
-
         return JSONObject().apply {
             if (!params.isNullOrEmpty()) {
                 for (entry in params.entries) {

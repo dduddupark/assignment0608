@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.suyeon.assignment0608.R
-import com.example.suyeon.assignment0608.setFragment
+import com.example.suyeon.assignment0608.view.set
 
 class MainActivity : AppCompatActivity() {
 
@@ -16,6 +16,6 @@ class MainActivity : AppCompatActivity() {
 
         Log.d(TAG, "onCreate")
 
-        setFragment(R.id.fragment_container, MainFragment(), supportFragmentManager)
+        supportFragmentManager.set(R.id.fragment_container, MainFragment())
     }
 }

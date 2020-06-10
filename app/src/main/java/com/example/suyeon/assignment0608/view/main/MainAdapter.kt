@@ -18,13 +18,14 @@ import com.example.suyeon.assignment0608.data.Employee
  * Description :
  */
 class MainAdapter(
-    private var list: List<Employee>,
     private val itemClickListener: ItemClickListener
 ) : RecyclerView.Adapter<MainAdapter.ViewHolder>() {
 
+    private var list = ArrayList<Employee>()
+
     private val TAG = "MainAdapter"
 
-    fun setData(list: List<Employee>) {
+    fun setData(list: ArrayList<Employee>) {
         this.list = list
         notifyDataSetChanged()
     }

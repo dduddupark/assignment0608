@@ -5,13 +5,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.api.HttpMethod
 import com.example.suyeon.assignment0608.api.NetWorkThread
 import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.data.PARAM
+import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_detail.*
 import org.json.JSONObject
 
@@ -27,14 +27,13 @@ class DetailFragment : Fragment() {
 
     private val TAG = "DetailFragment"
 
+    private lateinit var thread: NetWorkThread
+
     companion object {
         fun newInstance(id: String): DetailFragment {
-
             return DetailFragment().apply {
-
                 val bundle = Bundle()
                 bundle.putString(PARAM.ID, id)
-
                 arguments = bundle
             }
         }
@@ -48,8 +47,8 @@ class DetailFragment : Fragment() {
         return inflater.inflate(R.layout.frag_detail, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         edit.setOnClickListener {
             editData()
@@ -60,9 +59,17 @@ class DetailFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause")
+        thread.cancel(true)
+    }
+
     private fun getData(param: String) {
-        NetWorkThread(
-            HttpMethod.GET, mapOf(PARAM.ID to param), null,
+        thread = NetWorkThread(
+            HttpMethod.GET,
+            mapOf(PARAM.ID to param),
+            null,
             object : NetWorkThread.NetworkFinishListener {
                 override fun onFinished(result: String) {
                     Log.d(TAG, "result = " + result)
@@ -80,11 +87,12 @@ class DetailFragment : Fragment() {
                     )
                 }
             }
-        ).execute()
+        )
+        thread.execute()
     }
 
     private fun editData() {
-        NetWorkThread(
+        thread = NetWorkThread(
             HttpMethod.PUT,
             mapOf("id" to person_id.text.toString()),
             mapOf("name" to name.text.toString()),
@@ -93,14 +101,13 @@ class DetailFragment : Fragment() {
 
                     Log.d(TAG, "result = " + result)
 
-                    val newName = JSONObject(result).getString("name")
-                    name.setText(newName)
-
-                    Toast.makeText(context, result, Toast.LENGTH_LONG).show()
+                    name.setText(JSONObject(result).getString("name"))
+                    context!!.show(result)
                 }
             }
 
-        ).execute()
+        )
+        thread.execute()
     }
 
     private fun setText(employee: Employee) {
