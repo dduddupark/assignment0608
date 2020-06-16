@@ -45,6 +45,7 @@ class AddFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause")
+        //null
         thread.cancel(true)
     }
 

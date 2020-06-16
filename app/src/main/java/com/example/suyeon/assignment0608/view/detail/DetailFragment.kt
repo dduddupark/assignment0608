@@ -74,6 +74,7 @@ class DetailFragment : Fragment() {
                 override fun onFinished(result: String) {
                     Log.d(TAG, "result = " + result)
 
+                    //json parser 만들기
                     val data = JSONObject(result).getJSONObject("data")
 
                     setText(

@@ -16,10 +16,3 @@ data class Employee(
     val avatar: String
 )
 
-object PARAM {
-    const val ID = "id"
-    const val EMAIL = "email"
-    const val FIRST_NAME = "first_name"
-    const val LAST_NAME = "last_name"
-    const val AVATAR = "avatar"
-}

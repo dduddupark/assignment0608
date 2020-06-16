@@ -10,7 +10,7 @@ import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.api.HttpMethod
 import com.example.suyeon.assignment0608.api.NetWorkThread
 import com.example.suyeon.assignment0608.data.Employee
-import com.example.suyeon.assignment0608.data.PARAM
+import com.example.suyeon.assignment0608.data.Param
 import com.example.suyeon.assignment0608.view.add.AddFragment
 import com.example.suyeon.assignment0608.view.detail.DetailFragment
 import com.example.suyeon.assignment0608.view.set
@@ -81,7 +81,7 @@ class MainFragment : Fragment() {
     }
 
     private fun getListData() {
-
+        //TODO 로딩바 돌리기
         thread = NetWorkThread(
             HttpMethod.GET, null, null,
             object : NetWorkThread.NetworkFinishListener {
@@ -98,11 +98,11 @@ class MainFragment : Fragment() {
                             val tempJson = data.getJSONObject(i)
                             list.add(
                                 Employee(
-                                    tempJson.getString(PARAM.ID),
-                                    tempJson.getString(PARAM.EMAIL),
-                                    tempJson.getString(PARAM.FIRST_NAME),
-                                    tempJson.getString(PARAM.LAST_NAME),
-                                    tempJson.getString(PARAM.AVATAR)
+                                    tempJson.getString(Param.ID),
+                                    tempJson.getString(Param.EMAIL),
+                                    tempJson.getString(Param.FIRST_NAME),
+                                    tempJson.getString(Param.LAST_NAME),
+                                    tempJson.getString(Param.AVATAR)
                                 )
                             )
                         }

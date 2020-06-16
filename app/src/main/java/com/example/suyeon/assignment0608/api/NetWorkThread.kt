@@ -24,7 +24,9 @@ import javax.net.ssl.HttpsURLConnection
 enum class HttpMethod {
     GET, POST, PUT, DELETE
 }
-
+//공식문서에서 Deplicate 됐나 확인
+//AsyncTask Deplicated -> Coroutine
+//open
 open class NetWorkThread(
     private val requestType: HttpMethod,
     private val urlParams: Map<String, String>? = null,
@@ -38,6 +40,10 @@ open class NetWorkThread(
 
     interface NetworkFinishListener {
         fun onFinished(result: String)
+    }
+
+    override fun onProgressUpdate(vararg values: Void?) {
+        super.onProgressUpdate(*values)
     }
 
     override fun doInBackground(vararg params: Void?): String? {
@@ -68,7 +74,10 @@ open class NetWorkThread(
             val httpsConnection = URL(url).openConnection() as HttpsURLConnection
 
             httpsConnection.requestMethod = requestType.toString()
+            //서버 연결 시간
             httpsConnection.connectTimeout = TIME_OUT
+            //데이터 읽는 시간
+            httpsConnection.readTimeout
             httpsConnection.addRequestProperty("Content-Type", "application/json")
 
             Log.d(TAG, "httpConnection.url = " + httpsConnection.url)
@@ -77,7 +86,9 @@ open class NetWorkThread(
             if (HttpMethod.POST == requestType || HttpMethod.PUT == requestType) {
                 val os = httpsConnection.outputStream // 서버로 보내기 위한 출력 스트림
                 val bw = BufferedWriter(OutputStreamWriter(os, "UTF-8")) // UTF-8로 전송
+
                 val data = getPostJson(bodyParams)
+
                 Log.d(TAG, "data = " + data.toString())
                 bw.write(data.toString()) // 매개변수 전송
                 bw.flush()
@@ -91,7 +102,9 @@ open class NetWorkThread(
                 httpsConnection.responseCode == HttpURLConnection.HTTP_CREATED ||
                 httpsConnection.responseCode == HttpURLConnection.HTTP_NO_CONTENT
             ) {
+                //string -> stringBuffer -> StringBuilder
                 var readData = ""
+                //error시 객체해제
                 val reader =
                     BufferedReader(InputStreamReader(httpsConnection.inputStream)) // 서버의 응답을 읽기 위한 입력 스트림
 
@@ -122,6 +135,7 @@ open class NetWorkThread(
     }
 
     private fun getParams(params: Map<String, String>?): String {
+        //REST api 규격 형식
         return if (params != null) {
             val sb = StringBuffer()
             for (key in params) {
@@ -137,9 +151,14 @@ open class NetWorkThread(
     private fun getPostJson(params: Map<String, String>?): JSONObject {
         return JSONObject().apply {
             if (!params.isNullOrEmpty()) {
-                for (entry in params.entries) {
-                    put(entry.key, entry.value)
+
+                for ((key, value) in params) {
+                    put(key, value)
                 }
+
+                /*for (entry in params.entries) {
+                    put(entry.key, entry.value)
+                }*/
             }
         }
     }
