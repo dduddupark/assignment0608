@@ -1,12 +1,10 @@
 package com.example.suyeon.assignment0608.api
 
-import android.util.Log
 import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.data.Param
+import com.example.suyeon.assignment0608.data.Person
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.json.JSONArray
-import org.json.JSONObject
 
 
 /**
@@ -16,53 +14,22 @@ import org.json.JSONObject
  *
  * Description :
  */
-object DefaultRepository: NetworkRepository {
+object DefaultRepository : NetworkRepository {
 
     private val TAG = "DefaultRepository"
 
-    override suspend fun getUserList(): List<Employee> {
+    override suspend fun getUserList(): ArrayList<Employee> {
 
         var list = ArrayList<Employee>()
 
         withContext(Dispatchers.IO) {
 
-           val result = netWorkThread(HttpMethod.GET, null, null)
+            val result = netWorkThread(HttpMethod.GET, null, null)
 
             result?.let {
-
-                try {
-
-                    val data = JSONObject(result)
-
-                    if(data is JSONObject) {
-                        val json = data.get("data")
-
-                        if (json is JSONArray) {
-
-                            for (i in 0 until json.length()) {
-                                val tempJson = json.getJSONObject(i)
-                                list.add(
-                                    Employee(
-                                        tempJson.getString(Param.ID),
-                                        tempJson.getString(Param.EMAIL),
-                                        tempJson.getString(Param.FIRST_NAME),
-                                        tempJson.getString(Param.LAST_NAME),
-                                        tempJson.getString(Param.AVATAR)
-                                    )
-                                )
-                            }
-                        }
-
-                        Log.d(TAG, "parsing end")
-                    }
-
-                } catch (e: Exception) {
-
-                }
+                list = JsonParser.readEmployees(it)
             }
         }
-
-        Log.d(TAG, "list = " + list)
 
         return list
     }
@@ -71,15 +38,14 @@ object DefaultRepository: NetworkRepository {
 
         var isSuccess = false
 
-       /* withContext(Dispatchers.IO) {
-            NetWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null,
-                object : NetWorkThread.NetworkFinishListener {
-                    override fun onFinished(result: String) {
-                        isSuccess = true
-                    }
-                }
-            ).execute()
-        }*/
+        withContext(Dispatchers.IO) {
+
+            val result = netWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null)
+
+            result?.let {
+                isSuccess = true
+            }
+        }
 
         return isSuccess
     }
@@ -88,14 +54,18 @@ object DefaultRepository: NetworkRepository {
 
         var response = ""
 
-        /*NetWorkThread(HttpMethod.POST, null, mapOf(
-            "name" to name,
-            "job" to job
-        ), object : NetWorkThread.NetworkFinishListener {
-            override fun onFinished(result: String) {
+        withContext(Dispatchers.IO) {
+            val result = netWorkThread(
+                HttpMethod.POST, null, mapOf(
+                    "name" to name,
+                    "job" to job
+                )
+            )
+
+            result?.let {
                 response = result
             }
-        }).execute()*/
+        }
 
         return response
     }
@@ -104,45 +74,37 @@ object DefaultRepository: NetworkRepository {
 
         var employee: Employee? = null
 
-        /*NetWorkThread(
-            HttpMethod.GET,
-            mapOf(Param.ID to id),
-            null,
-            object : NetWorkThread.NetworkFinishListener {
-                override fun onFinished(result: String) {
+        withContext(Dispatchers.IO) {
 
-                    //json parser 만들기
-                    val data = JSONObject(result).getJSONObject("data")
+            val result = netWorkThread(
+                HttpMethod.GET,
+                mapOf(Param.ID to id),
+                null
+            )
 
-                    employee = Employee(
-                            data.getString(Param.ID),
-                            data.getString(Param.EMAIL),
-                            data.getString(Param.FIRST_NAME),
-                            data.getString(Param.LAST_NAME),
-                            data.getString(Param.AVATAR)
-                        )
-                }
+            result?.let {
+                employee = JsonParser.readEmployee(result)
             }
-        ).execute()*/
+        }
 
         return employee
     }
 
-    override suspend fun editUserInfo(id: String, name: String): String {
+    override suspend fun editUserInfo(id: String, name: String): Person? {
 
-        var response = ""
+        var response: Person? = null
 
-      /*  NetWorkThread(
-            HttpMethod.PUT,
-            mapOf("id" to id),
-            mapOf("name" to name),
-            object : NetWorkThread.NetworkFinishListener {
-                override fun onFinished(result: String) {
-                    response = result
-                }
+        withContext(Dispatchers.IO) {
+            val result = netWorkThread(
+                HttpMethod.PUT,
+                mapOf("id" to id),
+                mapOf("name" to name)
+            )
+
+            result?.let {
+                response = JsonParser.readPerson(result)
             }
-
-        ).execute()*/
+        }
 
         return response
     }

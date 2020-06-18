@@ -1,11 +1,9 @@
 package com.example.suyeon.assignment0608.view.main
 
 import com.example.suyeon.assignment0608.api.DefaultRepository
+import com.example.suyeon.assignment0608.base.BasePresenter
 import com.example.suyeon.assignment0608.data.Employee
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -15,24 +13,15 @@ import kotlin.coroutines.CoroutineContext
  *
  * Description :
  */
-class MainPresenter(val view: MainInterface.View): MainInterface.Presenter, CoroutineScope {
-
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
+class MainPresenter(val view: MainInterface.View) : MainInterface.Presenter, BasePresenter() {
 
     override fun getUserList() {
-
         launch {
-            DefaultRepository.getUserList().run {
-
-                launch(Dispatchers.Main) {
-                    view.showList(this as ArrayList<Employee>)
-                }
-            }
+            view.showList(DefaultRepository.getUserList())
         }
     }
 
     override fun deleteUser(employee: Employee) {
-
         launch {
             view.deleteSuccess(DefaultRepository.deleteUser(employee))
         }

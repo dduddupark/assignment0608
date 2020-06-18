@@ -1,6 +1,7 @@
 package com.example.suyeon.assignment0608.api
 
 import com.example.suyeon.assignment0608.data.Employee
+import com.example.suyeon.assignment0608.data.Person
 
 
 /**
@@ -20,6 +21,6 @@ interface NetworkRepository {
 
     suspend fun getUserInfo(id: String): Employee?
 
-    suspend fun editUserInfo(id: String, name: String): String
+    suspend fun editUserInfo(id: String, name: String): Person?
 
 }

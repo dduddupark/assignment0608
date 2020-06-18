@@ -40,7 +40,7 @@ class MainFragment : Fragment(), MainInterface.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d(TAG, "onActivityCreated")
+        Log.d(TAG, "onViewCreated")
 
         btn_add.setOnClickListener {
             fragmentManager!!.set(
@@ -70,7 +70,14 @@ class MainFragment : Fragment(), MainInterface.View {
         presenter.getUserList()
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume")
+    }
+
     override fun showList(list: ArrayList<Employee>) {
+
+        progress?.visibility = View.GONE
 
         adapter.setData(list)
         context!!.show("데이터를 불러왔습니다.")

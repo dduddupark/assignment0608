@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.data.Param
+import com.example.suyeon.assignment0608.data.Person
 import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_detail.*
-import org.json.JSONObject
 
 
 /**
@@ -57,17 +57,19 @@ class DetailFragment : Fragment(), DetailInterface.View {
     }
 
     override fun setInfo(employee: Employee?) {
-
         employee?.let {
-            person_id.text = employee.id
-            email.text = employee.email
-            name.setText(employee.firstName.plus(" ").plus(employee.lastName))
-            avatar.text = employee.avatar
+            person_id.text = it.id
+            email.text = it.email
+            name.setText(it.firstName.plus(" ").plus(it.lastName))
+            avatar.text = it.avatar
         }
     }
 
-    override fun editSuccess(result: String) {
-        name.setText(JSONObject(result).getString("name"))
-        context!!.show(result)
+    override fun editSuccess(person: Person?) {
+
+        person?.let {
+            name.setText(it.name)
+            context!!.show("수정 성공")
+        }
     }
 }

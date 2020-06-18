@@ -1,10 +1,8 @@
 package com.example.suyeon.assignment0608.view.add
 
 import com.example.suyeon.assignment0608.api.DefaultRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.suyeon.assignment0608.base.BasePresenter
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -14,14 +12,12 @@ import kotlin.coroutines.CoroutineContext
  *
  * Description :
  */
-class AddPresenter(val view: AddInterface.View): AddInterface.Presenter, CoroutineScope {
-
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
+class AddPresenter(val view: AddInterface.View) : AddInterface.Presenter, BasePresenter() {
 
     override fun createUser(name: String, job: String) {
 
         launch {
-             view.successCreateUser(DefaultRepository.createUser(name, job))
+            view.successCreateUser(DefaultRepository.createUser(name, job))
         }
     }
 }

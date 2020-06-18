@@ -10,7 +10,6 @@ package com.example.suyeon.assignment0608.data
  */
 
 
-
 class Param {
     companion object {  //== static final
         const val ID = "id"
@@ -18,5 +17,7 @@ class Param {
         const val FIRST_NAME = "first_name"
         const val LAST_NAME = "last_name"
         const val AVATAR = "avatar"
+
+        const val NAME = "name"
     }
 }

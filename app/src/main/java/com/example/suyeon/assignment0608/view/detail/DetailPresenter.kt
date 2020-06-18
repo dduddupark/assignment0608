@@ -1,10 +1,8 @@
 package com.example.suyeon.assignment0608.view.detail
 
 import com.example.suyeon.assignment0608.api.DefaultRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.suyeon.assignment0608.base.BasePresenter
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 
 /**
@@ -14,9 +12,7 @@ import kotlin.coroutines.CoroutineContext
  *
  * Description :
  */
-class DetailPresenter(val view: DetailInterface.View): DetailInterface.Presenter, CoroutineScope {
-
-    override val coroutineContext: CoroutineContext = Dispatchers.IO
+class DetailPresenter(val view: DetailInterface.View) : DetailInterface.Presenter, BasePresenter() {
 
     override fun getUserInfo(id: String) {
 
