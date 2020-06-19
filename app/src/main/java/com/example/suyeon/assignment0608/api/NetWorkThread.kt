@@ -2,6 +2,8 @@ package com.example.suyeon.assignment0608.api
 
 import android.util.Log
 import com.example.suyeon.assignment0608.BuildConfig
+import com.example.suyeon.assignment0608.data.Result
+import com.example.suyeon.assignment0608.data.ResultCode
 import org.json.JSONObject
 import java.io.*
 import java.net.HttpURLConnection
@@ -33,9 +35,9 @@ fun netWorkThread(
     requestType: HttpMethod,
     urlParams: Map<String, String>?,
     bodyParams: Map<String, String>?
-): String? {
+): Result {
 
-    var response: String?
+    lateinit var result: Result
 
     //error시 객체해제
     var bufferedReader: BufferedReader? = null
@@ -83,8 +85,8 @@ fun netWorkThread(
             httpsConnection.responseCode == HttpURLConnection.HTTP_NO_CONTENT
         ) {
             //string -> stringBuffer -> StringBuilder
-
-            val sb = StringBuffer()
+            //차이점 알아오기
+            val sb = StringBuilder()
 
             bufferedReader =
                 BufferedReader(InputStreamReader(httpsConnection.inputStream)) // 서버의 응답을 읽기 위한 입력 스트림
@@ -94,13 +96,15 @@ fun netWorkThread(
                 sb.append(line)
             }
 
-            response = sb.toString()
+            result = Result(ResultCode.SUCCESS, sb.toString())
 
         } else {
             Log.d(TAG, "error = " + httpsConnection.errorStream.toString())
 
-            response = httpsConnection.responseCode.toString().plus(" ")
-                .plus(httpsConnection.responseMessage)
+            result = Result(
+                ResultCode.ERROR, httpsConnection.responseCode.toString().plus(" ")
+                    .plus(httpsConnection.responseMessage)
+            )
         }
 
         httpsConnection.disconnect()
@@ -109,7 +113,7 @@ fun netWorkThread(
 
         Log.d(TAG, "Exception = " + e.toString())
 
-        response = e.toString()
+        result = Result(ResultCode.ERROR, e.toString())
 
     } finally {
         try {
@@ -120,7 +124,7 @@ fun netWorkThread(
         }
     }
 
-    return response
+    return result
 }
 
 private fun getParams(params: Map<String, String>?): String {

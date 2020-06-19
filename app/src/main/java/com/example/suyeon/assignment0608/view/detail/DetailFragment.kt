@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
-import com.example.suyeon.assignment0608.data.Employee
-import com.example.suyeon.assignment0608.data.Param
-import com.example.suyeon.assignment0608.data.Person
+import com.example.suyeon.assignment0608.data.*
 import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_detail.*
 
@@ -24,7 +22,7 @@ class DetailFragment : Fragment(), DetailInterface.View {
 
     private val TAG = "DetailFragment"
 
-    private val presenter = DetailPresenter(this)
+    private val presenter: DetailInterface.Presenter = DetailPresenter(this)
 
     companion object {
         fun newInstance(id: String): DetailFragment {
@@ -48,28 +46,49 @@ class DetailFragment : Fragment(), DetailInterface.View {
         super.onViewCreated(view, savedInstanceState)
 
         edit.setOnClickListener {
+            progress.visibility = View.VISIBLE
             presenter.editUserInfo(person_id.text.toString(), name.text.toString())
         }
 
         arguments?.getString(Param.ID)?.let {
+            progress.visibility = View.VISIBLE
             presenter.getUserInfo(it)
         }
     }
 
-    override fun setInfo(employee: Employee?) {
-        employee?.let {
-            person_id.text = it.id
-            email.text = it.email
-            name.setText(it.firstName.plus(" ").plus(it.lastName))
-            avatar.text = it.avatar
+    override fun infoResult(result: Result) {
+
+        progress.visibility = View.GONE
+
+        if (ResultCode.SUCCESS == result.code) {
+
+            val employee = result.data as Employee
+
+            employee.let {
+                person_id.text = it.id
+                email.text = it.email
+                name.setText(it.firstName.plus(" ").plus(it.lastName))
+                avatar.text = it.avatar
+            }
+        } else {
+            context!!.show("정보를 가져오는데 실패했습니다. : ".plus(result.data))
+            fragmentManager!!.popBackStack()
         }
     }
 
-    override fun editSuccess(person: Person?) {
+    override fun editResult(result: Result) {
 
-        person?.let {
-            name.setText(it.name)
-            context!!.show("수정 성공")
+        progress.visibility = View.GONE
+
+        if (ResultCode.SUCCESS == result.code) {
+            val person = result.data as Person?
+
+            person?.let {
+                name.setText(it.name)
+                context!!.show("수정 성공")
+            }
+        } else {
+            context!!.show("수정 실패 : ".plus(result.data))
         }
     }
 }

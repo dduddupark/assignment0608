@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
+import com.example.suyeon.assignment0608.data.Result
+import com.example.suyeon.assignment0608.data.ResultCode
 import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_add.*
 
@@ -21,7 +23,7 @@ class AddFragment : Fragment(), AddInterface.View {
 
     private val TAG = "AddFragment"
 
-    private val presenter = AddPresenter(this)
+    private val presenter: AddInterface.Presenter = AddPresenter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,11 +37,19 @@ class AddFragment : Fragment(), AddInterface.View {
         super.onViewCreated(view, savedInstanceState)
 
         btn_create.setOnClickListener {
+            progress.visibility = View.VISIBLE
             presenter.createUser(et_name.text.toString(), et_job.text.toString())
         }
     }
 
-    override fun successCreateUser(result: String) {
-        context!!.show(result)
+    override fun createResult(result: Result) {
+
+        progress?.visibility = View.GONE
+
+        if (ResultCode.SUCCESS == result.code) {
+            context!!.show("생성 성공")
+        } else {
+            context!!.show("생성 실패  : ".plus(result.data as String))
+        }
     }
 }

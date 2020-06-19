@@ -1,13 +1,12 @@
 package com.example.suyeon.assignment0608.view.main
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.data.Employee
+import kotlinx.android.synthetic.main.item_main.view.*
 
 
 /**
@@ -33,19 +32,15 @@ class MainAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
 
-        holder.id.text = item.id
-        holder.email.text = item.email
-        holder.name.text = item.firstName.plus(" ").plus(item.lastName)
-        holder.avatar.text = item.avatar
+        // ViewHolder.itemView 범위 내에서 코드를 수행합니다.
+        with(holder.itemView) {
+            person_id.text = item.id
+            email.text = item.email
+            name.text = item.firstName.plus(" ").plus(item.lastName)
+            avatar.text = item.avatar
 
-        if (!holder.itemView.hasOnClickListeners()) {
-
-            Log.d(
-                TAG,
-                "holder.itemView.hasOnClickListeners() = " + holder.itemView.hasOnClickListeners() + " / id = " + item.id
-            )
-
-            holder.delete.setOnClickListener {
+            //item이 final이라서 계속 새로 넣어줘야함
+            btn_delete.setOnClickListener {
                 itemClickListener.onDelete(item)
             }
 
@@ -53,6 +48,7 @@ class MainAdapter(
                 itemClickListener.onClick(item)
             }
         }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -60,12 +56,6 @@ class MainAdapter(
     }
 
     class ViewHolder private constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-        val id: TextView = itemView.findViewById(R.id.person_id)
-        val email: TextView = itemView.findViewById(R.id.email)
-        val name: TextView = itemView.findViewById(R.id.name)
-        val avatar: TextView = itemView.findViewById(R.id.avatar)
-        val delete: TextView = itemView.findViewById(R.id.btn_delete)
 
         companion object {
 

@@ -2,7 +2,8 @@ package com.example.suyeon.assignment0608.api
 
 import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.data.Param
-import com.example.suyeon.assignment0608.data.Person
+import com.example.suyeon.assignment0608.data.Result
+import com.example.suyeon.assignment0608.data.ResultCode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -14,98 +15,91 @@ import kotlinx.coroutines.withContext
  *
  * Description :
  */
+
 object DefaultRepository : NetworkRepository {
 
     private val TAG = "DefaultRepository"
+    private val repositoryError = "repositoryError : cannot draw close Dispatchers.IO"
 
-    override suspend fun getUserList(): ArrayList<Employee> {
+    override suspend fun getUserList(): Result {
 
-        var list = ArrayList<Employee>()
+        var result = Result(ResultCode.ERROR, repositoryError)
 
         withContext(Dispatchers.IO) {
+            result = netWorkThread(HttpMethod.GET, null, null)
 
-            val result = netWorkThread(HttpMethod.GET, null, null)
-
-            result?.let {
-                list = JsonParser.readEmployees(it)
+            if (ResultCode.SUCCESS == result.code) {
+                result.data = JsonParser.readEmployees(result.data as String)
             }
         }
 
-        return list
+        return result
     }
 
-    override suspend fun deleteUser(employee: Employee): Boolean {
+    override suspend fun deleteUser(employee: Employee): Result {
 
-        var isSuccess = false
+        var result = Result(ResultCode.ERROR, repositoryError)
 
         withContext(Dispatchers.IO) {
-
-            val result = netWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null)
-
-            result?.let {
-                isSuccess = true
-            }
+            result = netWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null)
         }
 
-        return isSuccess
+        return result
     }
 
-    override suspend fun createUser(name: String, job: String): String {
+    override suspend fun createUser(name: String, job: String): Result {
 
-        var response = ""
+        var result = Result(ResultCode.ERROR, repositoryError)
 
         withContext(Dispatchers.IO) {
-            val result = netWorkThread(
+            result = netWorkThread(
                 HttpMethod.POST, null, mapOf(
                     "name" to name,
                     "job" to job
                 )
             )
-
-            result?.let {
-                response = result
-            }
         }
 
-        return response
+        return result
     }
 
-    override suspend fun getUserInfo(id: String): Employee? {
+    override suspend fun getUserInfo(id: String): Result {
 
-        var employee: Employee? = null
+        var result = Result(ResultCode.ERROR, repositoryError)
 
         withContext(Dispatchers.IO) {
 
-            val result = netWorkThread(
+            result = netWorkThread(
                 HttpMethod.GET,
                 mapOf(Param.ID to id),
                 null
             )
 
-            result?.let {
-                employee = JsonParser.readEmployee(result)
+            if (ResultCode.SUCCESS == result.code) {
+                result.data = JsonParser.readEmployee(result.data as String)
             }
+
         }
 
-        return employee
+        return result
     }
 
-    override suspend fun editUserInfo(id: String, name: String): Person? {
+    override suspend fun editUserInfo(id: String, name: String): Result {
 
-        var response: Person? = null
+        var result = Result(ResultCode.ERROR, repositoryError)
 
         withContext(Dispatchers.IO) {
-            val result = netWorkThread(
+            result = netWorkThread(
                 HttpMethod.PUT,
                 mapOf("id" to id),
                 mapOf("name" to name)
             )
 
-            result?.let {
-                response = JsonParser.readPerson(result)
+            if (ResultCode.SUCCESS == result.code) {
+                result.data = JsonParser.readPerson(result.data as String)
             }
         }
 
-        return response
+        return result
     }
 }

@@ -17,7 +17,7 @@ class AddPresenter(val view: AddInterface.View) : AddInterface.Presenter, BasePr
     override fun createUser(name: String, job: String) {
 
         launch {
-            view.successCreateUser(DefaultRepository.createUser(name, job))
+            view.createResult(DefaultRepository.createUser(name, job))
         }
     }
 }

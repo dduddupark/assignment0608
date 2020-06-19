@@ -13,17 +13,18 @@ import kotlinx.coroutines.launch
  *
  * Description :
  */
-class MainPresenter(val view: MainInterface.View) : MainInterface.Presenter, BasePresenter() {
+class MainPresenter(private val view: MainInterface.View) : MainInterface.Presenter,
+    BasePresenter() {
 
     override fun getUserList() {
         launch {
-            view.showList(DefaultRepository.getUserList())
+            view.listResult(DefaultRepository.getUserList())
         }
     }
 
     override fun deleteUser(employee: Employee) {
         launch {
-            view.deleteSuccess(DefaultRepository.deleteUser(employee))
+            view.deleteResult(DefaultRepository.deleteUser(employee))
         }
 
     }

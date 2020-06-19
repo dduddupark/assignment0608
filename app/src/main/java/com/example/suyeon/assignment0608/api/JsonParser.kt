@@ -1,5 +1,6 @@
 package com.example.suyeon.assignment0608.api
 
+import android.util.Log
 import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.data.Param
 import com.example.suyeon.assignment0608.data.Person
@@ -17,34 +18,36 @@ import org.json.JSONObject
 
 object JsonParser {
 
-    fun readEmployees(result: String): ArrayList<Employee> {
+    fun readEmployees(result: String?): ArrayList<Employee> {
 
         val list = ArrayList<Employee>()
 
-        val data = JSONObject(result)
+        if (result != null) {
+            val data = JSONObject(result)
 
-        try {
+            try {
 
-            val json = data.get("data")
+                val json = data.get("data")
 
-            if (json is JSONArray) {
+                if (json is JSONArray) {
 
-                for (i in 0 until json.length()) {
-                    val tempJson = json.getJSONObject(i)
-                    list.add(
-                        Employee(
-                            tempJson.getString(Param.ID) ?: "",
-                            tempJson.getString(Param.EMAIL) ?: "",
-                            tempJson.getString(Param.FIRST_NAME) ?: "",
-                            tempJson.getString(Param.LAST_NAME) ?: "",
-                            tempJson.getString(Param.AVATAR) ?: ""
+                    for (i in 0 until json.length()) {
+                        val tempJson = json.getJSONObject(i)
+                        list.add(
+                            Employee(
+                                tempJson.getString(Param.ID) ?: "",
+                                tempJson.getString(Param.EMAIL) ?: "",
+                                tempJson.getString(Param.FIRST_NAME) ?: "",
+                                tempJson.getString(Param.LAST_NAME) ?: "",
+                                tempJson.getString(Param.AVATAR) ?: ""
+                            )
                         )
-                    )
+                    }
                 }
-            }
 
-        } catch (e: Exception) {
-            e.printStackTrace()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
 
         return list
@@ -79,20 +82,15 @@ object JsonParser {
 
     fun readPerson(result: String): Person? {
 
-        var person: Person? = null
+        Log.d("JsonParser", result)
 
-        val data = JSONObject(result)
+        var person: Person? = null
 
         try {
 
-            val json = data.get("data")
+            val data = JSONObject(result)
+            person = Person(data.getString(Param.NAME) ?: "")
 
-            if (json is JSONObject) {
-                person = Person(
-                    json.getString(Param.ID) ?: "",
-                    json.getString(Param.NAME) ?: ""
-                )
-            }
 
         } catch (e: Exception) {
             e.printStackTrace()

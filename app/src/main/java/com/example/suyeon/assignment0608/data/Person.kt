@@ -9,6 +9,5 @@ package com.example.suyeon.assignment0608.data
  * Description :
  */
 data class Person(
-    val id: String,
     val name: String
 )

@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.data.Employee
+import com.example.suyeon.assignment0608.data.Result
+import com.example.suyeon.assignment0608.data.ResultCode
 import com.example.suyeon.assignment0608.view.add.AddFragment
 import com.example.suyeon.assignment0608.view.detail.DetailFragment
 import com.example.suyeon.assignment0608.view.set
@@ -27,7 +29,7 @@ class MainFragment : Fragment(), MainInterface.View {
 
     private lateinit var adapter: MainAdapter
 
-    private val presenter = MainPresenter(this@MainFragment)
+    private val presenter: MainInterface.Presenter = MainPresenter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +62,8 @@ class MainFragment : Fragment(), MainInterface.View {
                 }
 
                 override fun onDelete(employee: Employee) {
+
+                    progress.visibility = View.VISIBLE
                     presenter.deleteUser(employee)
                 }
             })
@@ -67,28 +71,35 @@ class MainFragment : Fragment(), MainInterface.View {
         rv_employee.adapter = adapter
 
 
+        progress.visibility = View.VISIBLE
         presenter.getUserList()
     }
 
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume")
+    override fun listResult(result: Result) {
+        progress?.visibility = View.GONE
+
+        if (result.data is List<*>) {
+
+            val list: List<Employee> = (result.data as List<*>).filterIsInstance<Employee>()
+
+            tv_error?.visibility = View.GONE
+            adapter.setData(list as ArrayList<Employee>)
+            context!!.show("데이터를 불러왔습니다.")
+        } else {
+            tv_error?.visibility = View.VISIBLE
+            tv_error?.text = result.data as String
+        }
     }
 
-    override fun showList(list: ArrayList<Employee>) {
+    override fun deleteResult(result: Result) {
 
         progress?.visibility = View.GONE
 
-        adapter.setData(list)
-        context!!.show("데이터를 불러왔습니다.")
-    }
-
-    override fun deleteSuccess(isSuccess: Boolean) {
-        if (isSuccess) {
+        if (ResultCode.SUCCESS == result.code) {
             context!!.show("삭제 성공")
             presenter.getUserList()
         } else {
-            context!!.show("삭제 실패")
+            context!!.show("삭제 실패 : ".plus(result.data))
         }
     }
 }

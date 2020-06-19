@@ -17,14 +17,14 @@ class DetailPresenter(val view: DetailInterface.View) : DetailInterface.Presente
     override fun getUserInfo(id: String) {
 
         launch {
-            view.setInfo(DefaultRepository.getUserInfo(id))
+            view.infoResult(DefaultRepository.getUserInfo(id))
         }
 
     }
 
     override fun editUserInfo(id: String, name: String) {
         launch {
-            view.editSuccess(DefaultRepository.editUserInfo(id, name))
+            view.editResult(DefaultRepository.editUserInfo(id, name))
         }
     }
 }
