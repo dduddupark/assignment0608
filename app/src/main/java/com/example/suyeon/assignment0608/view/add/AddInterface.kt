@@ -1,6 +1,6 @@
 package com.example.suyeon.assignment0608.view.add
 
-import com.example.suyeon.assignment0608.data.Result
+import com.example.suyeon.assignment0608.data.Response
 
 
 /**
@@ -13,7 +13,7 @@ import com.example.suyeon.assignment0608.data.Result
 interface AddInterface {
 
     interface View {
-        fun createResult(result: Result)
+        fun createResult(response: Response<String>)
     }
 
     //여기로 들어와야됨

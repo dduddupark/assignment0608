@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
-import com.example.suyeon.assignment0608.data.*
+import com.example.suyeon.assignment0608.data.Employee
+import com.example.suyeon.assignment0608.data.Param
+import com.example.suyeon.assignment0608.data.Person
 import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_detail.*
 
@@ -56,14 +58,15 @@ class DetailFragment : Fragment(), DetailInterface.View {
         }
     }
 
-    override fun infoResult(result: Result) {
+    override fun error() {
+        context!!.show("알수없는 오류가 발생하였습니다.")
+    }
+
+    override fun infoResult(employee: Employee?) {
 
         progress.visibility = View.GONE
 
-        if (ResultCode.SUCCESS == result.code) {
-
-            val employee = result.data as Employee
-
+        if (employee != null) {
             employee.let {
                 person_id.text = it.id
                 email.text = it.email
@@ -71,24 +74,22 @@ class DetailFragment : Fragment(), DetailInterface.View {
                 avatar.text = it.avatar
             }
         } else {
-            context!!.show("정보를 가져오는데 실패했습니다. : ".plus(result.data))
+            context!!.show("정보를 가져오는데 실패했습니다.")
             fragmentManager!!.popBackStack()
         }
     }
 
-    override fun editResult(result: Result) {
+    override fun editResult(person: Person?) {
 
         progress.visibility = View.GONE
 
-        if (ResultCode.SUCCESS == result.code) {
-            val person = result.data as Person?
-
-            person?.let {
+        if (person != null) {
+            person.let {
                 name.setText(it.name)
                 context!!.show("수정 성공")
             }
         } else {
-            context!!.show("수정 실패 : ".plus(result.data))
+            context!!.show("수정 실패")
         }
     }
 }

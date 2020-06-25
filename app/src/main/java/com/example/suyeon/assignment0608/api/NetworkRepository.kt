@@ -1,7 +1,8 @@
 package com.example.suyeon.assignment0608.api
 
 import com.example.suyeon.assignment0608.data.Employee
-import com.example.suyeon.assignment0608.data.Result
+import com.example.suyeon.assignment0608.data.Person
+import com.example.suyeon.assignment0608.data.Response
 
 
 /**
@@ -13,14 +14,14 @@ import com.example.suyeon.assignment0608.data.Result
  */
 interface NetworkRepository {
 
-    suspend fun getUserList(): Result
+    suspend fun getUserList(): Response<ArrayList<Employee>>
 
-    suspend fun deleteUser(employee: Employee): Result
+    suspend fun deleteUser(employee: Employee): Response<String>
 
-    suspend fun createUser(uname: String, job: String): Result
+    suspend fun createUser(name: String, job: String): Response<String>
 
-    suspend fun getUserInfo(id: String): Result
+    suspend fun getUserInfo(id: String): Response<Employee>
 
-    suspend fun editUserInfo(id: String, name: String): Result
+    suspend fun editUserInfo(id: String, name: String): Response<Person>
 
 }

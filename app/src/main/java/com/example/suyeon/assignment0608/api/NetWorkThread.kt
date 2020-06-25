@@ -23,7 +23,6 @@ private const val CONNECTION_TIMEOUT = 5000
 private const val READ_TIMEOUT = 5000
 private const val TAG = "NetWorkThread"
 
-
 enum class HttpMethod {
     GET, POST, PUT, DELETE
 }
@@ -71,7 +70,7 @@ fun netWorkThread(
 
             val data = getPostJson(bodyParams)
 
-            Log.d(TAG, "data = " + data.toString())
+            Log.d(TAG, "body = " + data.toString())
             bufferWriter.write(data.toString()) // 매개변수 전송
             bufferWriter.flush()
             bufferWriter.close()
@@ -95,6 +94,8 @@ fun netWorkThread(
                 val line = bufferedReader.readLine() ?: break
                 sb.append(line)
             }
+
+            Log.d(TAG, "httpConnection.result.0 = " + sb.toString())
 
             result = Result(ResultCode.SUCCESS, sb.toString())
 

@@ -1,7 +1,7 @@
 package com.example.suyeon.assignment0608.view.main
 
 import com.example.suyeon.assignment0608.data.Employee
-import com.example.suyeon.assignment0608.data.Result
+import com.example.suyeon.assignment0608.data.Response
 
 /**
  * Created by SuYeon Park on 2020-06-16.
@@ -13,8 +13,8 @@ import com.example.suyeon.assignment0608.data.Result
 interface MainInterface {
 
     interface View {
-        fun listResult(result: Result)
-        fun deleteResult(result: Result)
+        fun listResult(response: Response<ArrayList<Employee>>)
+        fun deleteResult(response: Response<String>)
     }
 
     interface Presenter {

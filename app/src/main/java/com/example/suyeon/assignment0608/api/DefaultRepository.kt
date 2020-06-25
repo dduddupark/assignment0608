@@ -1,9 +1,6 @@
 package com.example.suyeon.assignment0608.api
 
-import com.example.suyeon.assignment0608.data.Employee
-import com.example.suyeon.assignment0608.data.Param
-import com.example.suyeon.assignment0608.data.Result
-import com.example.suyeon.assignment0608.data.ResultCode
+import com.example.suyeon.assignment0608.data.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -19,87 +16,116 @@ import kotlinx.coroutines.withContext
 object DefaultRepository : NetworkRepository {
 
     private val TAG = "DefaultRepository"
-    private val repositoryError = "repositoryError : cannot draw close Dispatchers.IO"
 
-    override suspend fun getUserList(): Result {
+    override suspend fun getUserList(): Response<ArrayList<Employee>> {
 
-        var result = Result(ResultCode.ERROR, repositoryError)
+        val response = Response<ArrayList<Employee>>()
+        response.code = ResultCode.ERROR
 
         withContext(Dispatchers.IO) {
-            result = netWorkThread(HttpMethod.GET, null, null)
 
-            if (ResultCode.SUCCESS == result.code) {
-                result.data = JsonParser.readEmployees(result.data as String)
+            val network = netWorkThread(HttpMethod.GET, null, null)
+
+            response.code = network.code
+
+            if (network.code == ResultCode.SUCCESS) {
+                val list = Employee.Companion.parseArray.fromJson(network.data)
+                response.data = list
+            } else if (network.code == ResultCode.ERROR) {
+                response.data = null
             }
         }
 
-        return result
+        return response
     }
 
-    override suspend fun deleteUser(employee: Employee): Result {
+    override suspend fun deleteUser(employee: Employee): Response<String> {
 
-        var result = Result(ResultCode.ERROR, repositoryError)
+        val response = Response<String>()
+        response.code = ResultCode.ERROR
 
         withContext(Dispatchers.IO) {
-            result = netWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null)
+
+            val network = netWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null)
+
+            response.code = network.code
+            response.data = network.data
         }
 
-        return result
+        return response
     }
 
-    override suspend fun createUser(name: String, job: String): Result {
+    override suspend fun createUser(name: String, job: String): Response<String> {
 
-        var result = Result(ResultCode.ERROR, repositoryError)
+        val response = Response<String>()
+        response.code = ResultCode.ERROR
 
         withContext(Dispatchers.IO) {
-            result = netWorkThread(
+
+            val network = netWorkThread(
                 HttpMethod.POST, null, mapOf(
                     "name" to name,
                     "job" to job
                 )
             )
+
+
+            response.code = network.code
+            response.data = network.data
         }
 
-        return result
+        return response
     }
 
-    override suspend fun getUserInfo(id: String): Result {
+    override suspend fun getUserInfo(id: String): Response<Employee> {
 
-        var result = Result(ResultCode.ERROR, repositoryError)
+        val response = Response<Employee>()
+        response.code = ResultCode.ERROR
 
         withContext(Dispatchers.IO) {
 
-            result = netWorkThread(
+            val network = netWorkThread(
                 HttpMethod.GET,
                 mapOf(Param.ID to id),
                 null
             )
 
-            if (ResultCode.SUCCESS == result.code) {
-                result.data = JsonParser.readEmployee(result.data as String)
-            }
+            response.code = network.code
 
+            if (network.code == ResultCode.SUCCESS) {
+                val json = Employee.Companion.parseObject.fromJson(network.data.toString())
+                response.data = json
+            } else if (network.code == ResultCode.ERROR) {
+                response.data = null
+            }
         }
 
-        return result
+        return response
     }
 
-    override suspend fun editUserInfo(id: String, name: String): Result {
+    override suspend fun editUserInfo(id: String, name: String): Response<Person> {
 
-        var result = Result(ResultCode.ERROR, repositoryError)
+        val response = Response<Person>()
+        response.code = ResultCode.ERROR
 
         withContext(Dispatchers.IO) {
-            result = netWorkThread(
+
+            val network = netWorkThread(
                 HttpMethod.PUT,
                 mapOf("id" to id),
                 mapOf("name" to name)
             )
 
-            if (ResultCode.SUCCESS == result.code) {
-                result.data = JsonParser.readPerson(result.data as String)
+            response.code = network.code
+
+            if (network.code == ResultCode.SUCCESS) {
+                val json = Person.fromJson(network.data)
+                response.data = json
+            } else if (network.code == ResultCode.ERROR) {
+                response.data = null
             }
         }
 
-        return result
+        return response
     }
 }

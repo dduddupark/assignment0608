@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.data.Employee
-import com.example.suyeon.assignment0608.data.Result
+import com.example.suyeon.assignment0608.data.Response
 import com.example.suyeon.assignment0608.data.ResultCode
 import com.example.suyeon.assignment0608.view.add.AddFragment
 import com.example.suyeon.assignment0608.view.detail.DetailFragment
@@ -75,31 +75,29 @@ class MainFragment : Fragment(), MainInterface.View {
         presenter.getUserList()
     }
 
-    override fun listResult(result: Result) {
+    override fun listResult(response: Response<ArrayList<Employee>>) {
         progress?.visibility = View.GONE
 
-        if (result.data is List<*>) {
-
-            val list: List<Employee> = (result.data as List<*>).filterIsInstance<Employee>()
-
+        if (response.code == ResultCode.SUCCESS) {
             tv_error?.visibility = View.GONE
-            adapter.setData(list as ArrayList<Employee>)
+            adapter.setData(response.data!!)
             context!!.show("데이터를 불러왔습니다.")
         } else {
             tv_error?.visibility = View.VISIBLE
-            tv_error?.text = result.data as String
+            tv_error?.text = "데이터를 불러오는데 실패했습니다."
         }
+
     }
 
-    override fun deleteResult(result: Result) {
+    override fun deleteResult(response: Response<String>) {
 
         progress?.visibility = View.GONE
 
-        if (ResultCode.SUCCESS == result.code) {
+        if (ResultCode.SUCCESS == response.code) {
             context!!.show("삭제 성공")
             presenter.getUserList()
         } else {
-            context!!.show("삭제 실패 : ".plus(result.data))
+            context!!.show("삭제 실패 : ".plus(response.data))
         }
     }
 }

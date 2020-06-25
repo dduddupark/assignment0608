@@ -2,6 +2,7 @@ package com.example.suyeon.assignment0608.view.detail
 
 import com.example.suyeon.assignment0608.api.DefaultRepository
 import com.example.suyeon.assignment0608.base.BasePresenter
+import com.example.suyeon.assignment0608.data.ResultCode
 import kotlinx.coroutines.launch
 
 
@@ -17,14 +18,29 @@ class DetailPresenter(val view: DetailInterface.View) : DetailInterface.Presente
     override fun getUserInfo(id: String) {
 
         launch {
-            view.infoResult(DefaultRepository.getUserInfo(id))
+
+            val result = DefaultRepository.getUserInfo(id)
+
+            if (result.code == ResultCode.SUCCESS) {
+                view.infoResult(result.data)
+            } else {
+                view.error()
+            }
         }
 
     }
 
     override fun editUserInfo(id: String, name: String) {
         launch {
-            view.editResult(DefaultRepository.editUserInfo(id, name))
+
+            val response = DefaultRepository.editUserInfo(id, name)
+
+            if (response.code == ResultCode.SUCCESS) {
+                response.data?.let { view.editResult(it) }
+            } else {
+                view.error()
+            }
+
         }
     }
 }
