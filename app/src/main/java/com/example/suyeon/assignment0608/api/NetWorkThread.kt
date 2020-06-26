@@ -84,7 +84,8 @@ fun netWorkThread(
             httpsConnection.responseCode == HttpURLConnection.HTTP_NO_CONTENT
         ) {
             //string -> stringBuffer -> StringBuilder
-            //차이점 알아오기
+            //StringBuffer는 각 메서드별로 Synchronized Keyword가 존재하여, 멀티스레드 환경에서도 동기화를 지원.
+            //반면, StringBuilder는 동기화를 보장하지 않음. 속도가 더 빠름
             val sb = StringBuilder()
 
             bufferedReader =

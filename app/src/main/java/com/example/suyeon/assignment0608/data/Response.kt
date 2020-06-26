@@ -11,11 +11,18 @@ package com.example.suyeon.assignment0608.data
 
 class Result(var code: ResultCode, var data: String)
 
-class Response<T> {
-    var code: ResultCode = ResultCode.NONE
-    var data: T? = null
-}
+open class Response<T>( var data: T)
 
+class Error<T>(
+    val exception: Exception,
+    data: T
+
+) : Response<T>(data)
+
+class Success<T>(
+    data: T
+
+) : Response<T>(data)
 
 enum class ResultCode {
     NONE, SUCCESS, ERROR

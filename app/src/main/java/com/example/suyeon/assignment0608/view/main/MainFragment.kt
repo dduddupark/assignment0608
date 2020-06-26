@@ -10,6 +10,7 @@ import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.data.Response
 import com.example.suyeon.assignment0608.data.ResultCode
+import com.example.suyeon.assignment0608.data.Success
 import com.example.suyeon.assignment0608.view.add.AddFragment
 import com.example.suyeon.assignment0608.view.detail.DetailFragment
 import com.example.suyeon.assignment0608.view.set
@@ -78,7 +79,7 @@ class MainFragment : Fragment(), MainInterface.View {
     override fun listResult(response: Response<ArrayList<Employee>>) {
         progress?.visibility = View.GONE
 
-        if (response.code == ResultCode.SUCCESS) {
+        if (response is Success) {
             tv_error?.visibility = View.GONE
             adapter.setData(response.data!!)
             context!!.show("데이터를 불러왔습니다.")

@@ -17,27 +17,18 @@ object DefaultRepository : NetworkRepository {
 
     private val TAG = "DefaultRepository"
 
-    override suspend fun getUserList(): Response<ArrayList<Employee>> {
+    override suspend fun getUserList(): Response<ArrayList<Employee>> = withContext(Dispatchers.IO) {
 
-        val response = Response<ArrayList<Employee>>()
-        response.code = ResultCode.ERROR
+        val network = netWorkThread(HttpMethod.GET, null, null)
+        if (network.code == ResultCode.SUCCESS) {
 
-        withContext(Dispatchers.IO) {
-
-            val network = netWorkThread(HttpMethod.GET, null, null)
-
-            response.code = network.code
-
-            if (network.code == ResultCode.SUCCESS) {
-                val list = Employee.Companion.parseArray.fromJson(network.data)
-                response.data = list
-            } else if (network.code == ResultCode.ERROR) {
-                response.data = null
-            }
+            Success(data = Employee.parseArray.fromJson(network.data))
+        } else {
+            Error(exception = Exception("error"), data = ArrayList<Employee>())
         }
 
-        return response
     }
+
 
     override suspend fun deleteUser(employee: Employee): Response<String> {
 
