@@ -18,11 +18,11 @@ open class Response<out T>(data: T? = null, exception: String = "") {
 
 class Error<T>(
     val exception: String
-) : Response<T>(null, exception)
+) : Response<T>(exception = exception)
 
 class Success<T>(
     data: T
-) : Response<T>(data)
+) : Response<T>(data = data)
 
 enum class ResultCode {
     SUCCESS, ERROR
