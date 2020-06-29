@@ -17,61 +17,45 @@ object DefaultRepository : NetworkRepository {
 
     private val TAG = "DefaultRepository"
 
-    override suspend fun getUserList(): Response<ArrayList<Employee>> = withContext(Dispatchers.IO) {
+    override suspend fun getUserList(): Response<ArrayList<Employee>> =
+        withContext(Dispatchers.IO) {
 
-        val network = netWorkThread(HttpMethod.GET, null, null)
-        if (network.code == ResultCode.SUCCESS) {
-
-            Success(data = Employee.parseArray.fromJson(network.data))
-        } else {
-            Error(exception = Exception("error"), data = ArrayList<Employee>())
+            val network = netWorkThread(HttpMethod.GET, null, null)
+            if (ResultCode.SUCCESS == network.code) {
+                Success(data = Employee.parseArray.fromJson(network.data))
+            } else {
+                Error<ArrayList<Employee>>(exception = Exception("error"))
+            }
         }
 
-    }
 
-
-    override suspend fun deleteUser(employee: Employee): Response<String> {
-
-        val response = Response<String>()
-        response.code = ResultCode.ERROR
-
+    override suspend fun deleteUser(employee: Employee): Response<String> =
         withContext(Dispatchers.IO) {
 
             val network = netWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null)
 
-            response.code = network.code
-            response.data = network.data
+            if (ResultCode.SUCCESS == network.code) {
+                Success(data = network.data)
+            } else {
+                Error<String>(exception = Exception(network.data))
+            }
+
         }
 
-        return response
-    }
-
-    override suspend fun createUser(name: String, job: String): Response<String> {
-
-        val response = Response<String>()
-        response.code = ResultCode.ERROR
+    override suspend fun createUser(name: String, job: String): Response<String> =
 
         withContext(Dispatchers.IO) {
 
-            val network = netWorkThread(
-                HttpMethod.POST, null, mapOf(
-                    "name" to name,
-                    "job" to job
-                )
-            )
+            val network = netWorkThread(HttpMethod.POST, null, mapOf("name" to name, "job" to job))
 
-
-            response.code = network.code
-            response.data = network.data
+            if (ResultCode.SUCCESS == network.code) {
+                Success(data = network.data)
+            } else {
+                Error<String>(exception = Exception(network.data))
+            }
         }
 
-        return response
-    }
-
-    override suspend fun getUserInfo(id: String): Response<Employee> {
-
-        val response = Response<Employee>()
-        response.code = ResultCode.ERROR
+    override suspend fun getUserInfo(id: String): Response<Employee?> =
 
         withContext(Dispatchers.IO) {
 
@@ -81,23 +65,14 @@ object DefaultRepository : NetworkRepository {
                 null
             )
 
-            response.code = network.code
-
-            if (network.code == ResultCode.SUCCESS) {
-                val json = Employee.Companion.parseObject.fromJson(network.data.toString())
-                response.data = json
-            } else if (network.code == ResultCode.ERROR) {
-                response.data = null
+            if (ResultCode.SUCCESS == network.code) {
+                Success(data = Employee.parseObject.fromJson(network.data))
+            } else {
+                Error<Employee>(exception = Exception(network.data))
             }
         }
 
-        return response
-    }
-
-    override suspend fun editUserInfo(id: String, name: String): Response<Person> {
-
-        val response = Response<Person>()
-        response.code = ResultCode.ERROR
+    override suspend fun editUserInfo(id: String, name: String): Response<Person?> =
 
         withContext(Dispatchers.IO) {
 
@@ -107,16 +82,10 @@ object DefaultRepository : NetworkRepository {
                 mapOf("name" to name)
             )
 
-            response.code = network.code
-
-            if (network.code == ResultCode.SUCCESS) {
-                val json = Person.fromJson(network.data)
-                response.data = json
-            } else if (network.code == ResultCode.ERROR) {
-                response.data = null
+            if (ResultCode.SUCCESS == network.code) {
+                Success(data = Person.fromJson(network.data))
+            } else {
+                Error<Person>(exception = Exception(network.data))
             }
         }
-
-        return response
-    }
 }

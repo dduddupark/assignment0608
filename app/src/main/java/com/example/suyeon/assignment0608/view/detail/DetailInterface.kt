@@ -15,8 +15,8 @@ interface DetailInterface {
 
     interface View {
         fun infoResult(employee: Employee?)
-        fun editResult(response: Person?)
-        fun error()
+        fun editResult(person: Person?)
+        fun error(error: String)
     }
 
     interface Presenter {

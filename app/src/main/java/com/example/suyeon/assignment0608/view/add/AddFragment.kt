@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
-import com.example.suyeon.assignment0608.data.Response
-import com.example.suyeon.assignment0608.data.ResultCode
 import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_add.*
 
@@ -42,14 +40,19 @@ class AddFragment : Fragment(), AddInterface.View {
         }
     }
 
-    override fun createResult(response: Response<String>) {
+    override fun createResult(response: String?) {
 
         progress?.visibility = View.GONE
 
-        if (ResultCode.SUCCESS == response.code) {
-            context!!.show("생성 성공")
+        if (response == null) {
+            context!!.show("생성 실패")
         } else {
-            context!!.show("생성 실패  : ".plus(response.data))
+            context!!.show("생성 성공")
         }
+    }
+
+    override fun error(error: String) {
+        progress?.visibility = View.GONE
+        context!!.show(error)
     }
 }

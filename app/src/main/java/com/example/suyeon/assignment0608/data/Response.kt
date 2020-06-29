@@ -11,17 +11,17 @@ package com.example.suyeon.assignment0608.data
 
 class Result(var code: ResultCode, var data: String)
 
-open class Response<T>( var data: T)
+open class Response<out T>(data: T? = null, exception: Exception? = null) {
+    val data: T? = data
+    val error: Exception? = exception
+}
 
 class Error<T>(
-    val exception: Exception,
-    data: T
-
-) : Response<T>(data)
+    val exception: Exception
+) : Response<T>(null, exception)
 
 class Success<T>(
     data: T
-
 ) : Response<T>(data)
 
 enum class ResultCode {

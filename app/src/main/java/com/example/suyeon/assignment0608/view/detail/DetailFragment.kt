@@ -58,13 +58,14 @@ class DetailFragment : Fragment(), DetailInterface.View {
         }
     }
 
-    override fun error() {
-        context!!.show("알수없는 오류가 발생하였습니다.")
+    override fun error(error: String) {
+        progress?.visibility = View.GONE
+        context!!.show(error)
     }
 
     override fun infoResult(employee: Employee?) {
 
-        progress.visibility = View.GONE
+        progress?.visibility = View.GONE
 
         if (employee != null) {
             employee.let {
@@ -81,7 +82,7 @@ class DetailFragment : Fragment(), DetailInterface.View {
 
     override fun editResult(person: Person?) {
 
-        progress.visibility = View.GONE
+        progress?.visibility = View.GONE
 
         if (person != null) {
             person.let {

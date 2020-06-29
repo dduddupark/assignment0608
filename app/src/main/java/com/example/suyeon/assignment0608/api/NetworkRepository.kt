@@ -20,8 +20,8 @@ interface NetworkRepository {
 
     suspend fun createUser(name: String, job: String): Response<String>
 
-    suspend fun getUserInfo(id: String): Response<Employee>
+    suspend fun getUserInfo(id: String): Response<Employee?>
 
-    suspend fun editUserInfo(id: String, name: String): Response<Person>
+    suspend fun editUserInfo(id: String, name: String): Response<Person?>
 
 }

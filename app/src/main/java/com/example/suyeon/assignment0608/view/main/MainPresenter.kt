@@ -3,6 +3,7 @@ package com.example.suyeon.assignment0608.view.main
 import com.example.suyeon.assignment0608.api.DefaultRepository
 import com.example.suyeon.assignment0608.base.BasePresenter
 import com.example.suyeon.assignment0608.data.Employee
+import com.example.suyeon.assignment0608.data.Success
 import kotlinx.coroutines.launch
 
 
@@ -18,13 +19,27 @@ class MainPresenter(private val view: MainInterface.View) : MainInterface.Presen
 
     override fun getUserList() {
         launch {
-            view.listResult(DefaultRepository.getUserList())
+
+            val result = DefaultRepository.getUserList()
+
+            if (result is Success) {
+                view.listResult(result.data)
+            } else {
+                view.error(result.error.toString())
+            }
         }
     }
 
     override fun deleteUser(employee: Employee) {
         launch {
-            view.deleteResult(DefaultRepository.deleteUser(employee))
+
+            val result = DefaultRepository.deleteUser(employee)
+
+            if (result is Success) {
+                view.deleteResult(result.data)
+            } else {
+                view.error(result.error.toString())
+            }
         }
 
     }

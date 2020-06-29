@@ -2,6 +2,7 @@ package com.example.suyeon.assignment0608.view.add
 
 import com.example.suyeon.assignment0608.api.DefaultRepository
 import com.example.suyeon.assignment0608.base.BasePresenter
+import com.example.suyeon.assignment0608.data.Success
 import kotlinx.coroutines.launch
 
 
@@ -17,7 +18,16 @@ class AddPresenter(val view: AddInterface.View) : AddInterface.Presenter, BasePr
     override fun createUser(name: String, job: String) {
 
         launch {
-            view.createResult(DefaultRepository.createUser(name, job))
+
+            val result = DefaultRepository.createUser(name, job)
+
+            if (result is Success) {
+                view.createResult(result.data)
+            } else {
+                view.error(result.error.toString())
+            }
+
+
         }
     }
 }
