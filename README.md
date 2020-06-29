@@ -4,6 +4,7 @@
 통신부분 : HttpsURLConnection, JSON, Coroutine
 화면부분 : MVP 구조
 
+
 0608
 - AsyncTask 사용
 - MVC 구조
@@ -22,9 +23,8 @@
 - Response.class 쪽 Error.class 수정
 - BaseInterface 추가하여 error, loadingbar 공통으로 뺌
 
-[사용한 kotlin 기능]
 
-참고서적 : Kotlin in Action
+[사용한 kotlin 기능] 참고서적 : Kotlin in Action
 
 - p.115 확장함수 (toast message, fragmentManager)
 - p.241 apply 함수 (network read buffer)
