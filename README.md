@@ -2,8 +2,7 @@
 안드로이드에서 제공하는 기능만으로 서버와 통신하는 화면 만들기
 
 통신부분 : HttpsURLConnection, JSON, Coroutine
-
-화면부분 : MVP 구조
+  화면부분 : MVP 구조
 
 
 0608
@@ -25,7 +24,7 @@
 - BaseInterface 추가하여 error, loadingbar 공통으로 뺌
 
 
-
+  
 [사용한 kotlin 기능] 
 
 참고서적 : Kotlin in Action
