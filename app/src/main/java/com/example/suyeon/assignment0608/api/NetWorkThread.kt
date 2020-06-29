@@ -27,9 +27,6 @@ enum class HttpMethod {
     GET, POST, PUT, DELETE
 }
 
-//공식문서에서 Deplicate 됐나 확인
-//AsyncTask Deplicated -> Coroutine
-//open
 fun netWorkThread(
     requestType: HttpMethod,
     urlParams: Map<String, String>?,
@@ -86,19 +83,19 @@ fun netWorkThread(
             //string -> stringBuffer -> StringBuilder
             //StringBuffer는 각 메서드별로 Synchronized Keyword가 존재하여, 멀티스레드 환경에서도 동기화를 지원.
             //반면, StringBuilder는 동기화를 보장하지 않음. 속도가 더 빠름
-            val sb = StringBuilder()
 
             bufferedReader =
                 BufferedReader(InputStreamReader(httpsConnection.inputStream)) // 서버의 응답을 읽기 위한 입력 스트림
 
-            while (true) {
-                val line = bufferedReader.readLine() ?: break
-                sb.append(line)
+            val data = buildString {
+                while (true) {
+                    append(bufferedReader.readLine() ?: break)
+                }
             }
 
-            Log.d(TAG, "httpConnection.result.0 = " + sb.toString())
+            Log.d(TAG, "httpConnection.data = " + data)
 
-            result = Result(ResultCode.SUCCESS, sb.toString())
+            result = Result(ResultCode.SUCCESS, data)
 
         } else {
             Log.d(TAG, "error = " + httpsConnection.errorStream.toString())

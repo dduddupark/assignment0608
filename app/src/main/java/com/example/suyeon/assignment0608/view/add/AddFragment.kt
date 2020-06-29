@@ -41,9 +41,6 @@ class AddFragment : Fragment(), AddInterface.View {
     }
 
     override fun createResult(response: String?) {
-
-        progress?.visibility = View.GONE
-
         if (response == null) {
             context!!.show("생성 실패")
         } else {
@@ -52,7 +49,10 @@ class AddFragment : Fragment(), AddInterface.View {
     }
 
     override fun error(error: String) {
-        progress?.visibility = View.GONE
         context!!.show(error)
+    }
+
+    override fun loading(isShow: Boolean) {
+        progress?.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 }

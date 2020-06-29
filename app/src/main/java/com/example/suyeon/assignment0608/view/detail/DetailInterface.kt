@@ -1,5 +1,6 @@
 package com.example.suyeon.assignment0608.view.detail
 
+import com.example.suyeon.assignment0608.base.BaseInterface
 import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.data.Person
 
@@ -13,10 +14,9 @@ import com.example.suyeon.assignment0608.data.Person
  */
 interface DetailInterface {
 
-    interface View {
+    interface View : BaseInterface.View {
         fun infoResult(employee: Employee?)
         fun editResult(person: Person?)
-        fun error(error: String)
     }
 
     interface Presenter {

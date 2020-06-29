@@ -1,5 +1,7 @@
 package com.example.suyeon.assignment0608.view.add
 
+import com.example.suyeon.assignment0608.base.BaseInterface
+
 
 /**
  * Created by SuYeon Park on 2020-06-16.
@@ -10,9 +12,8 @@ package com.example.suyeon.assignment0608.view.add
  */
 interface AddInterface {
 
-    interface View {
+    interface View : BaseInterface.View {
         fun createResult(response: String?)
-        fun error(error: String)
     }
 
     //여기로 들어와야됨

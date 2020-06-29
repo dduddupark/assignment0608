@@ -17,6 +17,8 @@ class AddPresenter(val view: AddInterface.View) : AddInterface.Presenter, BasePr
 
     override fun createUser(name: String, job: String) {
 
+        view.loading(true)
+
         launch {
 
             val result = DefaultRepository.createUser(name, job)
@@ -24,10 +26,10 @@ class AddPresenter(val view: AddInterface.View) : AddInterface.Presenter, BasePr
             if (result is Success) {
                 view.createResult(result.data)
             } else {
-                view.error(result.error.toString())
+                view.error(result.error)
             }
 
-
+            view.loading(false)
         }
     }
 }

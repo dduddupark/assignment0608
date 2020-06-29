@@ -1,5 +1,6 @@
 package com.example.suyeon.assignment0608.view.main
 
+import com.example.suyeon.assignment0608.base.BaseInterface
 import com.example.suyeon.assignment0608.data.Employee
 
 /**
@@ -11,10 +12,9 @@ import com.example.suyeon.assignment0608.data.Employee
  */
 interface MainInterface {
 
-    interface View {
+    interface View : BaseInterface.View {
         fun listResult(list: ArrayList<Employee>?)
         fun deleteResult(response: String?)
-        fun error(error: String)
     }
 
     interface Presenter {

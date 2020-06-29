@@ -1,7 +1,6 @@
 package com.example.suyeon.assignment0608.view.main
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,8 +39,6 @@ class MainFragment : Fragment(), MainInterface.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d(TAG, "onViewCreated")
-
         btn_add.setOnClickListener {
             fragmentManager!!.set(
                 R.id.fragment_container,
@@ -68,14 +65,10 @@ class MainFragment : Fragment(), MainInterface.View {
 
         rv_employee.adapter = adapter
 
-
-        progress.visibility = View.VISIBLE
         presenter.getUserList()
     }
 
     override fun listResult(list: ArrayList<Employee>?) {
-        progress?.visibility = View.GONE
-
         if (list != null) {
             tv_error?.visibility = View.GONE
             adapter.setData(list)
@@ -84,13 +77,9 @@ class MainFragment : Fragment(), MainInterface.View {
             tv_error?.visibility = View.VISIBLE
             tv_error?.text = "데이터를 불러오는데 실패했습니다."
         }
-
     }
 
     override fun deleteResult(response: String?) {
-
-        progress?.visibility = View.GONE
-
         if (response != null) {
             context!!.show("삭제 성공")
             presenter.getUserList()
@@ -100,7 +89,10 @@ class MainFragment : Fragment(), MainInterface.View {
     }
 
     override fun error(error: String) {
-        progress?.visibility = View.GONE
         context!!.show(error)
+    }
+
+    override fun loading(isShow: Boolean) {
+        progress?.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 }

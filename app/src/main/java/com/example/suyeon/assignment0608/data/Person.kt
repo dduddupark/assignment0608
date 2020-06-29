@@ -14,15 +14,13 @@ import org.json.JSONObject
 data class Person(
     val name: String
 ) {
-    companion object : JsonFactory<Person> {
+    object ParseObject : JsonFactory<Person> {
         override fun fromJson(jsonResult: String): Person? {
             var person: Person? = null
 
             try {
-
                 val data = JSONObject(jsonResult)
                 person = Person(data.getString(Param.NAME) ?: "")
-
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -31,6 +29,5 @@ data class Person(
             return person
         }
     }
-
 }
 

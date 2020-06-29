@@ -22,9 +22,9 @@ object DefaultRepository : NetworkRepository {
 
             val network = netWorkThread(HttpMethod.GET, null, null)
             if (ResultCode.SUCCESS == network.code) {
-                Success(data = Employee.parseArray.fromJson(network.data))
+                Success(data = Employee.ParseArray.fromJson(network.data))
             } else {
-                Error<ArrayList<Employee>>(exception = Exception("error"))
+                Error<ArrayList<Employee>>(exception = network.data)
             }
         }
 
@@ -37,7 +37,7 @@ object DefaultRepository : NetworkRepository {
             if (ResultCode.SUCCESS == network.code) {
                 Success(data = network.data)
             } else {
-                Error<String>(exception = Exception(network.data))
+                Error<String>(exception = network.data)
             }
 
         }
@@ -51,7 +51,7 @@ object DefaultRepository : NetworkRepository {
             if (ResultCode.SUCCESS == network.code) {
                 Success(data = network.data)
             } else {
-                Error<String>(exception = Exception(network.data))
+                Error<String>(exception = network.data)
             }
         }
 
@@ -66,9 +66,9 @@ object DefaultRepository : NetworkRepository {
             )
 
             if (ResultCode.SUCCESS == network.code) {
-                Success(data = Employee.parseObject.fromJson(network.data))
+                Success(data = Employee.ParseObject.fromJson(network.data))
             } else {
-                Error<Employee>(exception = Exception(network.data))
+                Error<Employee>(exception = network.data)
             }
         }
 
@@ -83,9 +83,9 @@ object DefaultRepository : NetworkRepository {
             )
 
             if (ResultCode.SUCCESS == network.code) {
-                Success(data = Person.fromJson(network.data))
+                Success(data = Person.ParseObject.fromJson(network.data))
             } else {
-                Error<Person>(exception = Exception(network.data))
+                Error<Person>(exception = network.data)
             }
         }
 }

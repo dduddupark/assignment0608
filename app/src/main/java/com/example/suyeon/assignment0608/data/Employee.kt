@@ -20,9 +20,9 @@ data class Employee(
     val avatar: String
 ) {
 
-    //static final 필요없음
+    //Companion Object(= static final) 필요없음
 
-    object parseObject : JsonFactory<Employee> {
+    object ParseObject : JsonFactory<Employee> {
         override fun fromJson(jsonResult: String): Employee? {
             var employee: Employee? = null
 
@@ -50,7 +50,7 @@ data class Employee(
         }
     }
 
-    object parseArray : JsonFactory<ArrayList<Employee>> {
+    object ParseArray : JsonFactory<ArrayList<Employee>> {
         override fun fromJson(jsonResult: String): ArrayList<Employee> {
             val list = ArrayList<Employee>()
 

@@ -1,6 +1,7 @@
 package com.example.suyeon.assignment0608.view.detail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,18 +49,15 @@ class DetailFragment : Fragment(), DetailInterface.View {
         super.onViewCreated(view, savedInstanceState)
 
         edit.setOnClickListener {
-            progress.visibility = View.VISIBLE
             presenter.editUserInfo(person_id.text.toString(), name.text.toString())
         }
 
         arguments?.getString(Param.ID)?.let {
-            progress.visibility = View.VISIBLE
             presenter.getUserInfo(it)
         }
     }
 
     override fun error(error: String) {
-        progress?.visibility = View.GONE
         context!!.show(error)
     }
 
@@ -69,10 +67,10 @@ class DetailFragment : Fragment(), DetailInterface.View {
 
         if (employee != null) {
             employee.let {
-                person_id.text = it.id
-                email.text = it.email
-                name.setText(it.firstName.plus(" ").plus(it.lastName))
-                avatar.text = it.avatar
+                person_id?.text = it.id
+                email?.text = it.email
+                name?.setText(it.firstName.plus(" ").plus(it.lastName))
+                avatar?.text = it.avatar
             }
         } else {
             context!!.show("정보를 가져오는데 실패했습니다.")
@@ -82,15 +80,20 @@ class DetailFragment : Fragment(), DetailInterface.View {
 
     override fun editResult(person: Person?) {
 
-        progress?.visibility = View.GONE
-
         if (person != null) {
             person.let {
-                name.setText(it.name)
+                name?.setText(it.name)
                 context!!.show("수정 성공")
             }
         } else {
             context!!.show("수정 실패")
         }
+    }
+
+    override fun loading(isShow: Boolean) {
+
+        Log.d(TAG, "isShow = " + isShow)
+
+        progress?.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 }

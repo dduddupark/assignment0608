@@ -23,5 +23,4 @@ interface NetworkRepository {
     suspend fun getUserInfo(id: String): Response<Employee?>
 
     suspend fun editUserInfo(id: String, name: String): Response<Person?>
-
 }

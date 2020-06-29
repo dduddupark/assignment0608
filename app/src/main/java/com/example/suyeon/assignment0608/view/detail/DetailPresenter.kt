@@ -17,6 +17,8 @@ class DetailPresenter(val view: DetailInterface.View) : DetailInterface.Presente
 
     override fun getUserInfo(id: String) {
 
+        view.loading(true)
+
         launch {
 
             val result = DefaultRepository.getUserInfo(id)
@@ -24,13 +26,17 @@ class DetailPresenter(val view: DetailInterface.View) : DetailInterface.Presente
             if (result is Success) {
                 view.infoResult(result.data)
             } else {
-                view.error(result.error.toString())
+                view.error(result.error)
             }
-        }
 
+            view.loading(false)
+        }
     }
 
     override fun editUserInfo(id: String, name: String) {
+
+        view.loading(true)
+
         launch {
 
             val result = DefaultRepository.editUserInfo(id, name)
@@ -38,9 +44,10 @@ class DetailPresenter(val view: DetailInterface.View) : DetailInterface.Presente
             if (result is Success) {
                 view.editResult(result.data)
             } else {
-                view.error(result.error.toString())
+                view.error(result.error)
             }
 
+            view.loading(false)
         }
     }
 }

@@ -18,6 +18,9 @@ class MainPresenter(private val view: MainInterface.View) : MainInterface.Presen
     BasePresenter() {
 
     override fun getUserList() {
+
+        view.loading(true)
+
         launch {
 
             val result = DefaultRepository.getUserList()
@@ -25,12 +28,17 @@ class MainPresenter(private val view: MainInterface.View) : MainInterface.Presen
             if (result is Success) {
                 view.listResult(result.data)
             } else {
-                view.error(result.error.toString())
+                view.error(result.error)
             }
+
+            view.loading(false)
         }
     }
 
     override fun deleteUser(employee: Employee) {
+
+        view.loading(true)
+
         launch {
 
             val result = DefaultRepository.deleteUser(employee)
@@ -38,9 +46,12 @@ class MainPresenter(private val view: MainInterface.View) : MainInterface.Presen
             if (result is Success) {
                 view.deleteResult(result.data)
             } else {
-                view.error(result.error.toString())
+                view.error(result.error)
             }
+
+            view.loading(false)
         }
 
+        view.loading(false)
     }
 }
