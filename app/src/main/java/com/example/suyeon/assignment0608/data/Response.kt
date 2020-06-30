@@ -11,14 +11,11 @@ package com.example.suyeon.assignment0608.data
 
 class Result(var code: ResultCode, var data: String)
 
-open class Response<out T>(data: T? = null, exception: String = "") {
-    val data: T? = data
-    val error: String = exception
-}
+open class Response<out T>(val data: T? = null, val error: String = "")
 
 class Error<T>(
-    val exception: String
-) : Response<T>(exception = exception)
+    exception: String
+) : Response<T>(error = exception)
 
 class Success<T>(
     data: T

@@ -17,8 +17,10 @@ object DefaultRepository : NetworkRepository {
 
     private val TAG = "DefaultRepository"
 
+    private val networkDispatcher = Dispatchers.IO
+
     override suspend fun getUserList(): Response<ArrayList<Employee>> =
-        withContext(Dispatchers.IO) {
+        withContext(networkDispatcher) {
 
             val network = netWorkThread(HttpMethod.GET, null, null)
             if (ResultCode.SUCCESS == network.code) {
@@ -28,9 +30,8 @@ object DefaultRepository : NetworkRepository {
             }
         }
 
-
     override suspend fun deleteUser(employee: Employee): Response<String> =
-        withContext(Dispatchers.IO) {
+        withContext(networkDispatcher) {
 
             val network = netWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null)
 
@@ -39,12 +40,11 @@ object DefaultRepository : NetworkRepository {
             } else {
                 Error<String>(exception = network.data)
             }
-
         }
 
     override suspend fun createUser(name: String, job: String): Response<String> =
 
-        withContext(Dispatchers.IO) {
+        withContext(networkDispatcher) {
 
             val network = netWorkThread(HttpMethod.POST, null, mapOf("name" to name, "job" to job))
 
@@ -57,13 +57,9 @@ object DefaultRepository : NetworkRepository {
 
     override suspend fun getUserInfo(id: String): Response<Employee?> =
 
-        withContext(Dispatchers.IO) {
+        withContext(networkDispatcher) {
 
-            val network = netWorkThread(
-                HttpMethod.GET,
-                mapOf(Param.ID to id),
-                null
-            )
+            val network = netWorkThread(HttpMethod.GET, mapOf(Param.ID to id), null)
 
             if (ResultCode.SUCCESS == network.code) {
                 Success(data = Employee.ParseObject.fromJson(network.data))
@@ -74,13 +70,9 @@ object DefaultRepository : NetworkRepository {
 
     override suspend fun editUserInfo(id: String, name: String): Response<Person?> =
 
-        withContext(Dispatchers.IO) {
+        withContext(networkDispatcher) {
 
-            val network = netWorkThread(
-                HttpMethod.PUT,
-                mapOf("id" to id),
-                mapOf("name" to name)
-            )
+            val network = netWorkThread(HttpMethod.PUT, mapOf("id" to id), mapOf("name" to name))
 
             if (ResultCode.SUCCESS == network.code) {
                 Success(data = Person.ParseObject.fromJson(network.data))

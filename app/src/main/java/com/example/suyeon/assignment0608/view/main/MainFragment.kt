@@ -10,6 +10,7 @@ import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.view.add.AddFragment
 import com.example.suyeon.assignment0608.view.detail.DetailFragment
 import com.example.suyeon.assignment0608.view.set
+import com.example.suyeon.assignment0608.view.setVisibility
 import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_main.*
 
@@ -40,7 +41,7 @@ class MainFragment : Fragment(), MainInterface.View {
         super.onViewCreated(view, savedInstanceState)
 
         btn_add.setOnClickListener {
-            fragmentManager!!.set(
+            fragmentManager.set(
                 R.id.fragment_container,
                 AddFragment()
             )
@@ -50,15 +51,13 @@ class MainFragment : Fragment(), MainInterface.View {
             object :
                 ItemClickListener {
                 override fun onClick(employee: Employee) {
-                    fragmentManager!!.set(
+                    fragmentManager.set(
                         R.id.fragment_container,
                         DetailFragment.newInstance(employee.id)
                     )
                 }
 
                 override fun onDelete(employee: Employee) {
-
-                    progress.visibility = View.VISIBLE
                     presenter.deleteUser(employee)
                 }
             })
@@ -72,7 +71,7 @@ class MainFragment : Fragment(), MainInterface.View {
         if (list != null) {
             tv_error?.visibility = View.GONE
             adapter.setData(list)
-            context!!.show("데이터를 불러왔습니다.")
+            context.show("데이터를 불러왔습니다.")
         } else {
             tv_error?.visibility = View.VISIBLE
             tv_error?.text = "데이터를 불러오는데 실패했습니다."
@@ -80,19 +79,11 @@ class MainFragment : Fragment(), MainInterface.View {
     }
 
     override fun deleteResult(response: String?) {
-        if (response != null) {
-            context!!.show("삭제 성공")
-            presenter.getUserList()
-        } else {
-            context!!.show("삭제 실패")
-        }
+        context.show("삭제 성공")
+        presenter.getUserList()
     }
 
-    override fun error(error: String) {
-        context!!.show(error)
-    }
+    override fun error(error: String) = context.show(error)
 
-    override fun loading(isShow: Boolean) {
-        progress?.visibility = if (isShow) View.VISIBLE else View.GONE
-    }
+    override fun loading(isShow: Boolean) = progress.setVisibility(isShow)
 }

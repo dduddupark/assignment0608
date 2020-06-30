@@ -1,7 +1,6 @@
 package com.example.suyeon.assignment0608.view.detail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import com.example.suyeon.assignment0608.R
 import com.example.suyeon.assignment0608.data.Employee
 import com.example.suyeon.assignment0608.data.Param
 import com.example.suyeon.assignment0608.data.Person
+import com.example.suyeon.assignment0608.view.setVisibility
 import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_detail.*
 
@@ -57,14 +57,7 @@ class DetailFragment : Fragment(), DetailInterface.View {
         }
     }
 
-    override fun error(error: String) {
-        context!!.show(error)
-    }
-
     override fun infoResult(employee: Employee?) {
-
-        progress?.visibility = View.GONE
-
         if (employee != null) {
             employee.let {
                 person_id?.text = it.id
@@ -73,27 +66,24 @@ class DetailFragment : Fragment(), DetailInterface.View {
                 avatar?.text = it.avatar
             }
         } else {
-            context!!.show("정보를 가져오는데 실패했습니다.")
-            fragmentManager!!.popBackStack()
+            context.show("정보를 가져오는데 실패했습니다.")
+            fragmentManager?.popBackStack()
         }
     }
 
     override fun editResult(person: Person?) {
-
         if (person != null) {
             person.let {
                 name?.setText(it.name)
-                context!!.show("수정 성공")
+                context.show("수정 성공")
             }
         } else {
-            context!!.show("수정 실패")
+            context.show("수정 실패")
         }
     }
 
-    override fun loading(isShow: Boolean) {
+    override fun error(error: String) = context.show(error)
 
-        Log.d(TAG, "isShow = " + isShow)
+    override fun loading(isShow: Boolean) = progress.setVisibility(isShow)
 
-        progress?.visibility = if (isShow) View.VISIBLE else View.GONE
-    }
 }

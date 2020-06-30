@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.suyeon.assignment0608.R
+import com.example.suyeon.assignment0608.view.setVisibility
 import com.example.suyeon.assignment0608.view.show
 import kotlinx.android.synthetic.main.frag_add.*
 
@@ -35,24 +36,19 @@ class AddFragment : Fragment(), AddInterface.View {
         super.onViewCreated(view, savedInstanceState)
 
         btn_create.setOnClickListener {
-            progress.visibility = View.VISIBLE
             presenter.createUser(et_name.text.toString(), et_job.text.toString())
         }
     }
 
     override fun createResult(response: String?) {
-        if (response == null) {
-            context!!.show("생성 실패")
+        if (response.isNullOrBlank()) {
+            context.show("생성 실패")
         } else {
-            context!!.show("생성 성공")
+            context.show("생성 성공\n".plus(response))
         }
     }
 
-    override fun error(error: String) {
-        context!!.show(error)
-    }
+    override fun error(error: String) = context.show(error)
 
-    override fun loading(isShow: Boolean) {
-        progress?.visibility = if (isShow) View.VISIBLE else View.GONE
-    }
+    override fun loading(isShow: Boolean) = progress.setVisibility(isShow)
 }
