@@ -50,27 +50,28 @@ fun netWorkThread(
 
         val httpsConnection = URL(url).openConnection() as HttpsURLConnection
 
-        httpsConnection.requestMethod = requestType.toString()
-        //서버 연결 시간
-        httpsConnection.connectTimeout = CONNECTION_TIMEOUT
-        //데이터 읽는 시간
-        httpsConnection.readTimeout = READ_TIMEOUT
-        //header
-        httpsConnection.addRequestProperty("Content-Type", "application/json")
+        httpsConnection.let {
+            it.requestMethod = requestType.toString()
+            //서버 연결 시간
+            it.connectTimeout = CONNECTION_TIMEOUT
+            //데이터 읽는 시간
+            it.readTimeout = READ_TIMEOUT
+            //header
+            it.addRequestProperty("Content-Type", "application/json")
+        }
 
         Log.d(TAG, "httpConnection.url = " + httpsConnection.url)
         Log.d(TAG, "httpConnection.requestMethod = " + httpsConnection.requestMethod)
 
         if (HttpMethod.POST == requestType || HttpMethod.PUT == requestType) {
             val os = httpsConnection.outputStream // 서버로 보내기 위한 출력 스트림
-            bufferWriter = BufferedWriter(OutputStreamWriter(os, "UTF-8")) // UTF-8로 전송
+            bufferWriter = BufferedWriter(OutputStreamWriter(os, "UTF-8")) /* UTF-8로 전송 */
+            bufferWriter.let {
+                it.write(getPostJson(bodyParams).toString()) // 매개변수 전송
+                it.flush()
+                it.close()
+            }
 
-            val data = getPostJson(bodyParams)
-
-            Log.d(TAG, "body = " + data.toString())
-            bufferWriter.write(data.toString()) // 매개변수 전송
-            bufferWriter.flush()
-            bufferWriter.close()
             os.close()
         }
 
@@ -129,12 +130,12 @@ fun netWorkThread(
 private fun getParams(params: Map<String, String>?): String {
     //REST api 규격 형식
     return if (params != null) {
-        val sb = StringBuffer()
-        for (key in params) {
-            sb.append("/")
-            sb.append(key.value)
+        buildString {
+            for (key in params) {
+                append("/")
+                append(key.value)
+            }
         }
-        sb.toString()
     } else {
         ""
     }

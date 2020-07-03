@@ -28,7 +28,7 @@ data class Employee(
 
             val data = JSONObject(jsonResult)
 
-            try {
+            if (data.has("data")) {
 
                 val json = data.get("data")
 
@@ -42,8 +42,6 @@ data class Employee(
                     )
                 }
 
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
 
             return employee
@@ -56,8 +54,7 @@ data class Employee(
 
             val data = JSONObject(jsonResult)
 
-            try {
-
+            if (data.has("data")) {
                 val json = data.get("data")
 
                 if (json is JSONArray) {
@@ -75,10 +72,14 @@ data class Employee(
                         )
                     }
                 }
+            }
+
+            /*try {   //메모리를 많이 씀
+                    //IO Exception, NumberFormat Exception 같은 못잡는것만 잡고 웬만하면 쓰지말기
 
             } catch (e: Exception) {
                 e.printStackTrace()
-            }
+            }*/
 
             return list
         }

@@ -16,15 +16,10 @@ data class Person(
 ) {
     object ParseObject : JsonFactory<Person> {
         override fun fromJson(jsonResult: String): Person? {
-            var person: Person? = null
+            val person: Person?
 
-            try {
-                val data = JSONObject(jsonResult)
-                person = Person(data.getString(Param.NAME) ?: "")
-
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            val data = JSONObject(jsonResult)
+            person = Person(data.getString(Param.NAME) ?: "")
 
             return person
         }

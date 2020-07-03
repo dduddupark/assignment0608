@@ -20,6 +20,7 @@ object DefaultRepository : NetworkRepository {
     private val networkDispatcher = Dispatchers.IO
 
     override suspend fun getUserList(): Response<ArrayList<Employee>> =
+
         withContext(networkDispatcher) {
 
             val network = netWorkThread(HttpMethod.GET, null, null)
@@ -31,9 +32,10 @@ object DefaultRepository : NetworkRepository {
         }
 
     override suspend fun deleteUser(employee: Employee): Response<String> =
+
         withContext(networkDispatcher) {
 
-            val network = netWorkThread(HttpMethod.DELETE, mapOf("id" to employee.id), null)
+            val network = netWorkThread(HttpMethod.DELETE, mapOf(Param.ID to employee.id), null)
 
             if (ResultCode.SUCCESS == network.code) {
                 Success(data = network.data)
@@ -46,7 +48,8 @@ object DefaultRepository : NetworkRepository {
 
         withContext(networkDispatcher) {
 
-            val network = netWorkThread(HttpMethod.POST, null, mapOf("name" to name, "job" to job))
+            val network =
+                netWorkThread(HttpMethod.POST, null, mapOf(Param.NAME to name, Param.JOB to job))
 
             if (ResultCode.SUCCESS == network.code) {
                 Success(data = network.data)
@@ -72,7 +75,8 @@ object DefaultRepository : NetworkRepository {
 
         withContext(networkDispatcher) {
 
-            val network = netWorkThread(HttpMethod.PUT, mapOf("id" to id), mapOf("name" to name))
+            val network =
+                netWorkThread(HttpMethod.PUT, mapOf(Param.ID to id), mapOf(Param.NAME to name))
 
             if (ResultCode.SUCCESS == network.code) {
                 Success(data = Person.ParseObject.fromJson(network.data))

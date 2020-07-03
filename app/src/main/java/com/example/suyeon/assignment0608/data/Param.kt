@@ -19,5 +19,6 @@ class Param {
         const val AVATAR = "avatar"
 
         const val NAME = "name"
+        const val JOB = "job"
     }
 }

@@ -12,7 +12,7 @@ fun View?.setVisibility(isShow: Boolean) {
 }
 
 fun Context?.show(text: String) {
-    if(this == null) return else Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
+    if (this == null) return else Toast.makeText(this, text, Toast.LENGTH_SHORT).show()
 }
 
 fun FragmentManager?.set(id: Int, newFragment: Fragment) {
