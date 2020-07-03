@@ -23,12 +23,16 @@
 - Response.class 쪽 Error.class 수정
 - BaseInterface 추가하여 error, loadingbar 공통으로 뺌   
 
+0703
+- try/catch 줄이기
+- 확장함수 null 처리 추가
+- 짧은 함수는 식으로 변경
 
   
 [사용한 kotlin 기능] 
 -------------
 참고서적 : Kotlin in Action
 
-- p.115 확장함수 (toast message, fragmentManager)
+- p.115 확장함수 (toast message, fragmentManager, progress visibility)
 - p.241 apply 함수 (network read buffer)
 - p.383 제네릭스 (Response.class)
